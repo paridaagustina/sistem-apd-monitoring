@@ -1,0 +1,100 @@
+
+@extends('layouts.app')
+
+@section('content')
+<style>
+    .edit-apd { max-width: 760px; margin: 0 auto; color: #263342; }
+    .edit-apd .kartu {
+        background: white; border: 1px solid #e7ebef; border-radius: 14px;
+        padding: 24px; box-shadow: 0 5px 20px #2538580a;
+    }
+    .edit-apd h2 { margin: 0 0 8px; font-size: 25px; }
+    .edit-apd .deskripsi { color: #687586; margin: 0 0 24px; font-size: 14px; }
+    .edit-apd .grup { margin-bottom: 19px; }
+    .edit-apd label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 14px; }
+    .edit-apd input[type="text"], .edit-apd select {
+        width: 100%; padding: 12px; border: 1px solid #d7dee7;
+        border-radius: 9px; background: white; font-size: 14px;
+    }
+    .edit-apd .bantuan { display: block; color: #687586; font-size: 12px; margin-top: 6px; }
+    .edit-apd .kesalahan { color: #b42318; font-size: 12px; margin-top: 6px; }
+    .edit-apd .aksi { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 25px; }
+    .edit-apd .tombol {
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 11px 16px; border-radius: 9px; border: 0;
+        text-decoration: none; cursor: pointer; font-weight: 700; font-size: 13px;
+    }
+    .edit-apd .simpan { background: #167d69; color: white; }
+    .edit-apd .batal { background: #edf1f5; color: #344054; }
+    @media(max-width: 600px) {
+        .edit-apd .kartu { padding: 17px; }
+        .edit-apd .aksi .tombol { flex: 1; }
+    }
+</style>
+
+<div class="edit-apd">
+    <div class="kartu">
+        <h2>Edit Jenis APD</h2>
+        <p class="deskripsi">
+            Perbarui informasi untuk {{ $apdItem->name }}.
+        </p>
+
+        <form action="{{ route('admin.apd-items.update', $apdItem) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            <div class="grup">
+                <label for="name">Nama APD</label>
+                <input id="name" name="name" type="text"
+                       value="{{ old('name', $apdItem->name) }}"
+                       required maxlength="100">
+                @error('name') <div class="kesalahan">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="grup">
+                <label for="code">Kode APD</label>
+                <input id="code" name="code" type="text"
+                       value="{{ old('code', $apdItem->code) }}"
+                       required maxlength="50">
+                <span class="bantuan">
+                    Kode hanya boleh berisi huruf, angka, tanda hubung, dan garis bawah.
+                </span>
+                @error('code') <div class="kesalahan">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="grup">
+                <label for="is_required">Kewajiban Penggunaan</label>
+                <select id="is_required" name="is_required" required>
+                    <option value="1" @selected((string) old('is_required', (int) $apdItem->is_required) === '1')>
+                        Wajib digunakan
+                    </option>
+                    <option value="0" @selected((string) old('is_required', (int) $apdItem->is_required) === '0')>
+                        Tidak wajib
+                    </option>
+                </select>
+                @error('is_required') <div class="kesalahan">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="grup">
+                <label for="is_active">Status APD</label>
+                <select id="is_active" name="is_active" required>
+                    <option value="1" @selected((string) old('is_active', (int) $apdItem->is_active) === '1')>
+                        Aktif
+                    </option>
+                    <option value="0" @selected((string) old('is_active', (int) $apdItem->is_active) === '0')>
+                        Nonaktif
+                    </option>
+                </select>
+                @error('is_active') <div class="kesalahan">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="aksi">
+                <button type="submit" class="tombol simpan">Simpan Perubahan</button>
+                <a href="{{ route('admin.apd-items.index') }}" class="tombol batal">
+                    Kembali
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection

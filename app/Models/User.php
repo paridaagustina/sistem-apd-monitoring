@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,7 +23,6 @@ use Illuminate\Notifications\Notifiable;
 ])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     protected function casts(): array
@@ -33,22 +33,23 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Memeriksa apakah pengguna adalah admin.
-     */
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
-public function worker(): HasOne
-{
-    return $this->hasOne(Worker::class, 'user_id');
-}
-    /**
-     * Memeriksa apakah pengguna adalah pekerja lapangan.
-     */
+
     public function isPekerjaLapangan(): bool
     {
         return $this->role === 'pekerja_lapangan';
+    }
+
+    public function worker(): HasOne
+    {
+        return $this->hasOne(Worker::class, 'user_id');
+    }
+
+    public function ccvObservations(): HasMany
+    {
+        return $this->hasMany(CcvObservation::class);
     }
 }

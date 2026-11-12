@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Ccv\CcvFormController;
+use App\Http\Controllers\Admin\CcvDashboardController;
 use App\Http\Controllers\ApdDashboardController;
 use App\Http\Controllers\ApdMonitoringController;
 use App\Http\Controllers\Admin\ApdItemController;
@@ -8,23 +10,35 @@ use App\Http\Controllers\Worker\FieldReportController;
 use App\Http\Controllers\Admin\AdminFieldReportController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
-// Halaman awal
+// ==================================================
+// HALAMAN AWAL
+// ==================================================
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Dashboard berdasarkan role
+// ==================================================
+// DASHBOARD BERDASARKAN ROLE
+// ==================================================
+
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/dashboard', function () {
-        if (auth()->user()->isAdmin()) {
+    Route::get('/dashboard', function (Request $request) {
+
+        $user = $request->user();
+
+        if ($user && $user->isAdmin()) {
             return redirect()->route('admin.dashboard');
         }
 
         return redirect()->route('pekerja.dashboard');
+
     })->name('dashboard');
 
+    // Pengaturan profil
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
@@ -35,18 +49,25 @@ Route::middleware(['auth'])->group(function () {
         ->name('profile.destroy');
 });
 
+// ==================================================
 // DASHBOARD ADMIN
+// ==================================================
+
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
+        // Dashboard Admin
         Route::get('/dashboard', [
             ApdDashboardController::class,
             'admin',
         ])->name('dashboard');
 
-        // Master APD
+        // ------------------------------------------
+        // MASTER APD
+        // ------------------------------------------
+
         Route::get('/apd-items', [ApdItemController::class, 'index'])
             ->name('apd-items.index');
 
@@ -67,7 +88,10 @@ Route::middleware(['auth', 'role:admin'])
             [ApdItemController::class, 'toggleStatus']
         )->name('apd-items.toggle-status');
 
-        // Data pekerja
+        // ------------------------------------------
+        // DATA PEKERJA
+        // ------------------------------------------
+
         Route::get('/workers', [WorkerController::class, 'index'])
             ->name('workers.index');
 
@@ -88,45 +112,71 @@ Route::middleware(['auth', 'role:admin'])
             [WorkerController::class, 'toggleStatus']
         )->name('workers.toggle-status');
 
-        // Laporan Lapangan
-Route::get('/field-reports', [
-    AdminFieldReportController::class,
-    'index',
-])->name('field-reports.index');
+        // ------------------------------------------
+        // LAPORAN LAPANGAN
+        // ------------------------------------------
 
-Route::get('/field-reports/{fieldReport}', [
-    AdminFieldReportController::class,
-    'show',
-])->name('field-reports.show');
+        Route::get('/field-reports', [
+            AdminFieldReportController::class,
+            'index',
+        ])->name('field-reports.index');
 
-Route::get('/field-reports/{fieldReport}/video', [
-    AdminFieldReportController::class,
-    'video',
-])->name('field-reports.video');
+        Route::get('/field-reports/{fieldReport}', [
+            AdminFieldReportController::class,
+            'show',
+        ])->name('field-reports.show');
 
-Route::patch('/field-reports/{fieldReport}/status', [
-    AdminFieldReportController::class,
-    'updateStatus',
-])->name('field-reports.update-status');
+        Route::get('/field-reports/{fieldReport}/video', [
+            AdminFieldReportController::class,
+            'video',
+        ])->name('field-reports.video');
 
-Route::get('/field-reports/{fieldReport}/download', [
-    AdminFieldReportController::class,
-    'download',
-])->name('field-reports.download');
+        Route::patch('/field-reports/{fieldReport}/status', [
+            AdminFieldReportController::class,
+            'updateStatus',
+        ])->name('field-reports.update-status');
+
+        Route::get('/field-reports/{fieldReport}/download', [
+            AdminFieldReportController::class,
+            'download',
+        ])->name('field-reports.download');
+
+        // ------------------------------------------
+        // CCV - DASHBOARD ADMIN
+        // Admin hanya melihat grafik dan laporan
+        // ------------------------------------------
+
+        Route::get('/ccv', [
+            CcvDashboardController::class,
+            'index',
+        ])->name('ccv.index');
+
+        Route::get('/ccv/{observation}', [
+            CcvDashboardController::class,
+            'show',
+        ])->name('ccv.show');
+
     });
 
+// ==================================================
 // DASHBOARD PEKERJA LAPANGAN
+// ==================================================
+
 Route::middleware(['auth', 'role:pekerja_lapangan'])
     ->prefix('pekerja')
     ->name('pekerja.')
     ->group(function () {
 
+        // Dashboard Pekerja
         Route::get('/dashboard', [
             ApdDashboardController::class,
             'pekerja',
         ])->name('dashboard');
 
-        // Monitoring hanya untuk pekerja lapangan
+        // ------------------------------------------
+        // MONITORING APD
+        // ------------------------------------------
+
         Route::get('/monitoring', [
             ApdMonitoringController::class,
             'index',
@@ -138,17 +188,41 @@ Route::middleware(['auth', 'role:pekerja_lapangan'])
         ])->middleware('throttle:10,1')
           ->name('monitoring.store');
 
-        // Laporan Video Lapangan
-Route::get('/field-reports', [
-    FieldReportController::class,
-    'index',
-])->name('field-reports.index');
+        // ------------------------------------------
+        // LAPORAN VIDEO LAPANGAN
+        // ------------------------------------------
 
-Route::post('/field-reports', [
-    FieldReportController::class,
-    'store',
-])->middleware('throttle:5,1')
-  ->name('field-reports.store');
+        Route::get('/field-reports', [
+            FieldReportController::class,
+            'index',
+        ])->name('field-reports.index');
+
+        Route::post('/field-reports', [
+            FieldReportController::class,
+            'store',
+        ])->middleware('throttle:5,1')
+          ->name('field-reports.store');
+
+        // ------------------------------------------
+        // CCV - FORMULIR PEKERJA
+        // Pegawai mengisi formulir CCV
+        // ------------------------------------------
+
+        Route::get('/ccv', [
+            CcvFormController::class,
+            'create',
+        ])->name('ccv.create');
+
+        Route::post('/ccv', [
+            CcvFormController::class,
+            'store',
+        ])->middleware('throttle:10,1')
+          ->name('ccv.store');
+
     });
+
+// ==================================================
+// AUTHENTICATION
+// ==================================================
 
 require __DIR__.'/auth.php';

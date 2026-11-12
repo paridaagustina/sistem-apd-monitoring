@@ -5,61 +5,353 @@
 @section('content')
 
 <style>
+    /* =====================================
+       LIVE LAPORAN LAPANGAN - MODERN UI
+    ===================================== */
+
     .laporan-wrapper {
-        max-width: 1100px;
-        margin: auto;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 8px 0 30px;
+        color: #172554;
     }
 
+    .laporan-wrapper * {
+        box-sizing: border-box;
+    }
+
+    /* HEADER */
+
     .laporan-header {
-        background: linear-gradient(135deg, #164e63, #0e7490);
+        position: relative;
+        overflow: hidden;
+        padding: 30px;
+        border-radius: 20px;
+        margin-bottom: 24px;
         color: white;
-        padding: 28px;
-        border-radius: 18px;
-        margin-bottom: 22px;
+        background: linear-gradient(120deg, #164e80, #087e9c);
+        box-shadow: 0 8px 24px rgba(14, 116, 144, .14);
+    }
+
+    .laporan-header::after {
+        content: "";
+        position: absolute;
+        width: 230px;
+        height: 230px;
+        right: -65px;
+        top: -110px;
+        border: 35px solid rgba(255,255,255,.08);
+        border-radius: 50%;
+    }
+
+    .header-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .header-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 12px;
+        background: rgba(255,255,255,.15);
+        border: 1px solid rgba(255,255,255,.2);
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .6px;
+        margin-bottom: 14px;
+    }
+
+    .laporan-header h1 {
+        font-size: 25px;
+        font-weight: 800;
+        margin: 0;
+        color: white;
     }
 
     .laporan-header p {
-        color: #e0f2fe;
-        margin-top: 8px;
+        margin: 10px 0 0;
+        color: #dbeafe;
+        font-size: 13px;
+        line-height: 1.7;
+        max-width: 650px;
     }
+
+    /* NOTIFICATION */
+
+    .pesan-sukses,
+    .pesan-error {
+        padding: 15px 18px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-size: 13px;
+    }
+
+    .pesan-sukses {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+
+    .pesan-error {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
+    /* GRID */
 
     .laporan-grid {
         display: grid;
-        grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr);
-        gap: 20px;
+        grid-template-columns: minmax(0, 1.35fr) minmax(300px, .85fr);
+        gap: 22px;
+        align-items: start;
+    }
+
+    /* CARD */
+
+    .kartu {
+        background: #ffffff;
+        border: 1px solid #e5edf6;
+        border-radius: 18px;
+        padding: 23px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, .045);
+        min-width: 0;
+    }
+
+    .kartu h2 {
+        font-size: 16px;
+        font-weight: 800;
+        color: #172554;
+        margin: 0 0 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .kartu h2::before {
+        content: "";
+        width: 4px;
+        height: 20px;
+        background: #2563eb;
+        border-radius: 5px;
+    }
+
+    /* GPS PANEL */
+
+    .panel-lokasi {
+        padding: 18px;
+        background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+        border: 1px solid #bfdbfe;
+        border-radius: 14px;
+        margin-bottom: 17px;
+    }
+
+    .lokasi-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    .lokasi-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        background: #dbeafe;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+        flex-shrink: 0;
+    }
+
+    .lokasi-heading h3 {
+        font-size: 14px;
+        font-weight: 800;
+        color: #1e3a8a;
+        margin: 0;
+    }
+
+    .lokasi-heading small {
+        display: block;
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 4px;
+    }
+
+    #statusLokasi {
+        font-size: 12px;
+        color: #475569;
+        line-height: 1.6;
+        margin: 10px 0 14px;
+    }
+
+    /* CAMERA */
+
+    .kamera-container {
+        position: relative;
+        overflow: hidden;
+        background: #0f172a;
+        border-radius: 15px;
+        border: 1px solid #1e293b;
+        margin-bottom: 16px;
+        min-height: 260px;
     }
 
     .kamera-preview {
-        width: 100%;
-        background: #0f172a;
-        border-radius: 14px;
-        min-height: 260px;
-        max-height: 480px;
-        object-fit: contain;
-    }
-
-    .form-laporan label {
         display: block;
-        font-weight: 600;
-        margin: 15px 0 7px;
+        width: 100%;
+        height: auto;
+        min-height: 260px;
+        max-height: 430px;
+        object-fit: contain;
+        background: #0f172a;
     }
 
-    .form-laporan input {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 12px;
-        border: 1px solid #cbd5e1;
-        border-radius: 9px;
+    .kamera-label {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        padding: 7px 11px;
+        background: rgba(15,23,42,.75);
+        color: white;
+        border-radius: 7px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .5px;
+        pointer-events: none;
     }
+
+    /* STATUS REKAMAN */
+
+    .status-rekaman {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 15px;
+        border-radius: 11px;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: #475569;
+        font-size: 12px;
+        line-height: 1.5;
+        margin: 13px 0;
+    }
+
+    .status-dot {
+        width: 9px;
+        height: 9px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: #94a3b8;
+    }
+
+    /* DURATION */
+
+    .durasi-panel {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        margin-bottom: 15px;
+    }
+
+    .durasi-label {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    #durasi {
+        color: #1d4ed8;
+        font-size: 20px;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* GPS INFORMATION */
+
+    .gps-info {
+        padding: 16px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        margin-bottom: 15px;
+    }
+
+    .gps-info-title {
+        color: #334155;
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .gps-info-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .gps-info-item:last-child {
+        border-bottom: none;
+    }
+
+    .gps-info-item small {
+        display: block;
+        color: #64748b;
+        font-size: 11px;
+        margin-bottom: 5px;
+    }
+
+    .gps-info-item p {
+        color: #1e293b;
+        font-size: 12px;
+        font-weight: 700;
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+    #linkPeta {
+        display: inline-block;
+        margin-top: 12px;
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    #linkPeta:hover {
+        text-decoration: underline;
+    }
+
+    /* BUTTON */
 
     .tombol-laporan {
         width: 100%;
-        padding: 12px;
+        padding: 13px 16px;
         border: none;
-        border-radius: 9px;
-        margin-top: 12px;
+        border-radius: 10px;
+        margin-top: 10px;
         cursor: pointer;
-        font-weight: 700;
+        font-size: 13px;
+        font-weight: 800;
+        transition: all .2s ease;
+    }
+
+    .tombol-laporan:hover:not(:disabled) {
+        transform: translateY(-2px);
+        filter: brightness(.96);
+    }
+
+    .tombol-laporan:disabled {
+        opacity: .45;
+        cursor: not-allowed;
+        transform: none;
     }
 
     .btn-mulai {
@@ -73,83 +365,213 @@
     }
 
     .btn-kirim {
-        background: #1d4ed8;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
         color: white;
+        padding: 15px;
+        margin-top: 22px;
+        box-shadow: 0 5px 13px rgba(37,99,235,.16);
     }
 
-    .tombol-laporan:disabled {
-        opacity: .5;
-        cursor: not-allowed;
+    /* FORM */
+
+    .form-laporan label {
+        display: block;
+        color: #334155;
+        font-size: 12px;
+        font-weight: 700;
+        margin: 17px 0 8px;
     }
 
-    .status-rekaman {
-        padding: 10px;
-        border-radius: 8px;
-        background: #f1f5f9;
-        margin: 12px 0;
+    .form-laporan input:not([type="hidden"]):not([type="file"]) {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid #dbe4ef;
+        border-radius: 10px;
+        outline: none;
+        background: #fff;
+        color: #1e293b;
+        font-size: 13px;
+        transition: all .2s;
     }
 
-    .pesan-sukses {
-        background: #dcfce7;
-        color: #166534;
-        padding: 14px;
-        border-radius: 9px;
+    .form-laporan input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+    }
+
+    .form-laporan input[readonly] {
+        background: #f8fafc;
+        color: #64748b;
+        cursor: default;
+    }
+
+    .form-laporan input::placeholder {
+        color: #94a3b8;
+    }
+
+    .form-petunjuk {
+        padding: 13px;
+        background: #eff6ff;
+        border-radius: 10px;
+        color: #1e40af;
+        font-size: 11px;
+        line-height: 1.7;
+        margin-top: 18px;
+    }
+
+    .teks-redup {
+        color: #64748b;
+        font-size: 11px;
+        line-height: 1.7;
+    }
+
+    /* HISTORY */
+
+    .riwayat-card {
+        margin-top: 23px;
+    }
+
+    .riwayat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
         margin-bottom: 18px;
     }
 
-    .pesan-error {
-        background: #fee2e2;
-        color: #991b1b;
-        padding: 14px;
-        border-radius: 9px;
-        margin-bottom: 18px;
+    .riwayat-header h2 {
+        margin-bottom: 0;
+    }
+
+    .riwayat-label {
+        background: #eff6ff;
+        color: #2563eb;
+        padding: 7px 11px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .pembungkus-tabel {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid #e5edf6;
+        border-radius: 12px;
     }
 
     .tabel-laporan {
         width: 100%;
+        min-width: 650px;
         border-collapse: collapse;
+        background: white;
     }
 
-    .tabel-laporan th,
-    .tabel-laporan td {
-        padding: 12px 8px;
-        border-bottom: 1px solid #e2e8f0;
+    .tabel-laporan th {
+        background: #f8fafc;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 15px;
         text-align: left;
+        white-space: nowrap;
     }
 
-    @media(max-width: 760px) {
+    .tabel-laporan td {
+        padding: 15px;
+        color: #334155;
+        font-size: 12px;
+        border-top: 1px solid #edf2f7;
+    }
+
+    .tabel-laporan tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 7px 11px;
+        border-radius: 20px;
+        background: #fff7ed;
+        color: #c2410c;
+        font-size: 10px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .status.hijau {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width: 900px) {
         .laporan-grid {
             grid-template-columns: 1fr;
         }
+    }
+
+    @media(max-width: 600px) {
+        .laporan-wrapper {
+            padding: 5px 0 20px;
+        }
 
         .laporan-header {
-            padding: 20px;
+            padding: 22px;
+            border-radius: 15px;
+        }
+
+        .laporan-header h1 {
+            font-size: 21px;
+        }
+
+        .kartu {
+            padding: 17px;
+            border-radius: 14px;
+        }
+
+        .kamera-container,
+        .kamera-preview {
+            min-height: 220px;
+        }
+
+        .riwayat-header {
+            align-items: flex-start;
         }
     }
 </style>
 
 <div class="laporan-wrapper">
 
+    {{-- HEADER --}}
     <div class="laporan-header">
-        <h1>Live Laporan Lapangan</h1>
+        <div class="header-content">
 
-        <p>
-            Rekam kondisi lokasi ketika tiba di lapangan,
-            kemudian kirimkan video kepada admin.
-            Fitur ini terpisah dari deteksi kelengkapan APD.
-        </p>
+            <div class="header-label">
+                🛡️ WORKPLACE SAFETY SYSTEM
+            </div>
+
+            <h1>Live Laporan Lapangan</h1>
+
+            <p>
+                Dokumentasikan kondisi lokasi kerja melalui video
+                dan koordinat GPS. Kirimkan laporan lapangan kepada
+                admin untuk proses pemeriksaan.
+            </p>
+
+        </div>
     </div>
 
+    {{-- NOTIFIKASI --}}
     @if(session('success'))
         <div class="pesan-sukses">
-            {{ session('success') }}
+            ✓ {{ session('success') }}
         </div>
     @endif
 
     @if($errors->any())
         <div class="pesan-error">
             <strong>Laporan belum berhasil dikirim:</strong>
-
             <ul>
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -160,109 +582,126 @@
 
     <div class="laporan-grid">
 
+        {{-- KOLOM KAMERA --}}
         <div class="kartu">
 
             <h2>Kamera Lapangan</h2>
 
-<div
-    id="panelLokasi"
-    style="
-        padding: 18px;
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-        border-radius: 12px;
-        margin-bottom: 16px;
-    "
->
-    <h3 style="margin-top: 0;">Verifikasi Lokasi GPS</h3>
+            {{-- GPS VERIFICATION --}}
+            <div class="panel-lokasi" id="panelLokasi">
 
-    <p id="statusLokasi">
-        Izinkan akses lokasi untuk mengaktifkan kamera.
-    </p>
+                <div class="lokasi-heading">
+                    <div class="lokasi-icon">📍</div>
 
-    <button
-        type="button"
-        id="btnAktifkan"
-        class="tombol-laporan btn-mulai"
-    >
-        📍 Izinkan Lokasi & Aktifkan Kamera
-    </button>
-</div>
+                    <div>
+                        <h3>Verifikasi Lokasi GPS</h3>
+                        <small>Langkah pertama sebelum merekam video</small>
+                    </div>
+                </div>
 
-<video
-    id="kamera"
-    class="kamera-preview"
-    autoplay
-    muted
-    playsinline
-></video>
+                <p id="statusLokasi">
+                    Izinkan akses lokasi untuk mengaktifkan kamera.
+                </p>
 
-<div class="status-rekaman" id="statusRekaman">
-    Kamera terkunci. Verifikasi lokasi terlebih dahulu.
-</div>
+                <button
+                    type="button"
+                    id="btnAktifkan"
+                    class="tombol-laporan btn-mulai"
+                >
+                    📍 Izinkan Lokasi & Aktifkan Kamera
+                </button>
 
-<div style="margin-bottom: 12px;">
-    <strong>Durasi:</strong>
-    <span id="durasi">00:00</span>
-</div>
+            </div>
 
-<div
-    style="
-        padding: 14px;
-        background: #f8fafc;
-        border-radius: 10px;
-        margin-bottom: 15px;
-    "
->
-    <strong>Koordinat GPS</strong>
+            {{-- CAMERA PREVIEW --}}
+            <div class="kamera-container">
 
-    <p id="koordinatGPS" style="margin-top: 8px;">
-        Belum tersedia
-    </p>
+                <div class="kamera-label">
+                    ● CAMERA PREVIEW
+                </div>
 
-    <strong>Akurasi GPS</strong>
+                <video
+                    id="kamera"
+                    class="kamera-preview"
+                    autoplay
+                    muted
+                    playsinline
+                ></video>
 
-    <p id="akurasiGPS" style="margin-top: 8px;">
-        Belum tersedia
-    </p>
+            </div>
 
-    <a
-        id="linkPeta"
-        href="#"
-        target="_blank"
-        rel="noopener noreferrer"
-        hidden
-    >
-        Lihat lokasi di Google Maps
-    </a>
-</div>
+            {{-- RECORDING STATUS --}}
+            <div class="status-rekaman" id="statusRekaman">
+                <span class="status-dot"></span>
+                Kamera terkunci. Verifikasi lokasi terlebih dahulu.
+            </div>
 
-<button
-    type="button"
-    id="btnMulai"
-    class="tombol-laporan btn-mulai"
-    disabled
->
-    🔴 Mulai Merekam
-</button>
+            {{-- DURATION --}}
+            <div class="durasi-panel">
+                <span class="durasi-label">
+                    ⏱ Durasi Perekaman
+                </span>
 
-<button
-    type="button"
-    id="btnStop"
-    class="tombol-laporan btn-stop"
-    disabled
->
-    Hentikan Rekaman
-</button>
+                <span id="durasi">00:00:00</span>
+            </div>
 
-            <p class="teks-redup" style="margin-top:12px;">
-                Pastikan izin kamera diberikan dan lokasi yang direkam
-                terlihat jelas. Setelah rekaman dihentikan, tekan
-                tombol Kirim Laporan.
+            {{-- GPS DETAIL --}}
+            <div class="gps-info">
+
+                <div class="gps-info-title">
+                    INFORMASI KOORDINAT LOKASI
+                </div>
+
+                <div class="gps-info-item">
+                    <small>Koordinat GPS</small>
+                    <p id="koordinatGPS">Belum tersedia</p>
+                </div>
+
+                <div class="gps-info-item">
+                    <small>Akurasi GPS</small>
+                    <p id="akurasiGPS">Belum tersedia</p>
+                </div>
+
+                <a
+                    id="linkPeta"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    hidden
+                >
+                    ↗ Lihat lokasi di Google Maps
+                </a>
+
+            </div>
+
+            {{-- RECORDING BUTTONS --}}
+            <button
+                type="button"
+                id="btnMulai"
+                class="tombol-laporan btn-mulai"
+                disabled
+            >
+                🔴 Mulai Merekam
+            </button>
+
+            <button
+                type="button"
+                id="btnStop"
+                class="tombol-laporan btn-stop"
+                disabled
+            >
+                ■ Hentikan Rekaman
+            </button>
+
+            <p class="teks-redup" style="margin-top:15px;">
+                Pastikan lokasi sudah terverifikasi dan kondisi
+                lapangan terlihat jelas. Setelah rekaman dihentikan,
+                periksa video sebelum mengirim laporan.
             </p>
 
         </div>
 
+        {{-- KOLOM FORM --}}
         <div class="kartu">
 
             <h2>Informasi Laporan</h2>
@@ -272,7 +711,8 @@
                 class="form-laporan"
                 action="{{ route('pekerja.field-reports.store') }}"
                 method="POST"
-                enctype="multipart/form-data">
+                enctype="multipart/form-data"
+            >
 
                 @csrf
 
@@ -287,74 +727,88 @@
                     maxlength="255"
                     placeholder="Contoh: Proyek Gedung A"
                     value="{{ old('location_name') }}"
-                    required>
+                    required
+                >
 
-                    <label for="latitude">Latitude GPS</label>
+                <label for="latitudeTampil">
+                    Latitude GPS
+                </label>
 
-<input
-    type="text"
-    id="latitudeTampil"
-    readonly
-    placeholder="Menunggu verifikasi lokasi"
->
+                <input
+                    type="text"
+                    id="latitudeTampil"
+                    readonly
+                    placeholder="Menunggu verifikasi lokasi"
+                >
 
-<label for="longitude">Longitude GPS</label>
+                <label for="longitudeTampil">
+                    Longitude GPS
+                </label>
 
-<input
-    type="text"
-    id="longitudeTampil"
-    readonly
-    placeholder="Menunggu verifikasi lokasi"
->
+                <input
+                    type="text"
+                    id="longitudeTampil"
+                    readonly
+                    placeholder="Menunggu verifikasi lokasi"
+                >
 
-<input
-    type="hidden"
-    id="latitude"
-    name="latitude"
->
+                <input
+                    type="hidden"
+                    id="latitude"
+                    name="latitude"
+                >
 
-<input
-    type="hidden"
-    id="longitude"
-    name="longitude"
->
+                <input
+                    type="hidden"
+                    id="longitude"
+                    name="longitude"
+                >
 
-<input
-    type="hidden"
-    id="location_accuracy"
-    name="location_accuracy"
->
+                <input
+                    type="hidden"
+                    id="location_accuracy"
+                    name="location_accuracy"
+                >
 
-                <label>Waktu Mulai</label>
+                <label for="waktuMulaiTampil">
+                    Waktu Mulai
+                </label>
 
                 <input
                     type="text"
                     id="waktuMulaiTampil"
                     readonly
-                    placeholder="Otomatis ketika mulai merekam">
+                    placeholder="Otomatis ketika mulai merekam"
+                >
 
-                <label>Waktu Selesai</label>
+                <label for="waktuSelesaiTampil">
+                    Waktu Selesai
+                </label>
 
                 <input
                     type="text"
                     id="waktuSelesaiTampil"
                     readonly
-                    placeholder="Otomatis ketika rekaman dihentikan">
+                    placeholder="Otomatis ketika rekaman dihentikan"
+                >
 
                 <input
                     type="hidden"
                     id="started_at"
-                    name="started_at">
+                    name="started_at"
+                >
 
                 <input
                     type="hidden"
                     id="ended_at"
-                    name="ended_at">
+                    name="ended_at"
+                >
 
                 <input
                     type="hidden"
                     id="video_duration"
-                    name="video_duration">
+                    name="video_duration"
+                >
 
                 <input
                     type="file"
@@ -362,21 +816,30 @@
                     name="video"
                     accept="video/webm,video/mp4,video/quicktime"
                     hidden
-                    required>
+                    required
+                >
+
+                <div class="form-petunjuk">
+                    <strong>Informasi Pengiriman</strong><br>
+                    Pastikan nama lokasi telah diisi, koordinat GPS
+                    tersedia, dan video berhasil direkam sebelum
+                    mengirim laporan kepada admin.
+                </div>
 
                 <button
                     type="submit"
                     id="btnKirim"
                     class="tombol-laporan btn-kirim"
-                    disabled>
-                    Kirim Laporan
+                    disabled
+                >
+                    ↑ Kirim Laporan
                 </button>
 
                 <p
                     id="statusUpload"
                     class="teks-redup"
-                    style="margin-top:12px;">
-                </p>
+                    style="margin-top:12px;"
+                ></p>
 
             </form>
 
@@ -384,9 +847,18 @@
 
     </div>
 
-    <div class="kartu" style="margin-top:22px;">
+    {{-- RIWAYAT LAPORAN --}}
+    <div class="kartu riwayat-card">
 
-        <h2>Riwayat Laporan Saya</h2>
+        <div class="riwayat-header">
+
+            <h2>Riwayat Laporan Saya</h2>
+
+            <span class="riwayat-label">
+                📋 RIWAYAT
+            </span>
+
+        </div>
 
         <div class="pembungkus-tabel">
 
@@ -403,11 +875,18 @@
                 </thead>
 
                 <tbody>
-                    @forelse($reports as $report)
-                        <tr>
-                            <td>{{ $reports->firstItem() + $loop->index }}</td>
 
-                            <td>{{ $report->location_name }}</td>
+                    @forelse($reports as $report)
+
+                        <tr>
+
+                            <td>
+                                {{ $reports->firstItem() + $loop->index }}
+                            </td>
+
+                            <td>
+                                <strong>{{ $report->location_name }}</strong>
+                            </td>
 
                             <td>
                                 {{ $report->submitted_at->format('d/m/Y H:i:s') }}
@@ -420,29 +899,42 @@
                             <td>
                                 @if($report->status === 'diperiksa')
                                     <span class="status hijau">
-                                        Sudah Diperiksa
+                                        ✓ Sudah Diperiksa
                                     </span>
                                 @else
                                     <span class="status">
-                                        Menunggu Pemeriksaan
+                                        ◷ Menunggu Pemeriksaan
                                     </span>
                                 @endif
                             </td>
+
                         </tr>
+
                     @empty
+
                         <tr>
-                            <td colspan="5" style="text-align:center;padding:25px;">
-                                Belum ada laporan lapangan.
+                            <td colspan="5" style="text-align:center;padding:30px;">
+                                <div style="font-size:25px;margin-bottom:8px;">
+                                    📂
+                                </div>
+
+                                <strong>Belum Ada Laporan</strong>
+
+                                <p class="teks-redup">
+                                    Laporan lapangan yang dikirim akan muncul di sini.
+                                </p>
                             </td>
                         </tr>
+
                     @endforelse
+
                 </tbody>
 
             </table>
 
         </div>
 
-        <div style="margin-top:15px;">
+        <div style="margin-top:18px;">
             {{ $reports->links() }}
         </div>
 
@@ -487,7 +979,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let rekamanBlobUrl = null;
 
-    // Waktu lokal untuk tampilan.
     function formatWaktu(ms) {
         return new Date(ms).toLocaleString('id-ID', {
             timeZone: 'Asia/Makassar',
@@ -501,7 +992,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }) + ' WITA';
     }
 
-    // Waktu ISO untuk dikirim ke Laravel.
     function formatISO(ms) {
         return new Date(ms).toISOString();
     }
@@ -550,7 +1040,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('linkPeta').hidden = true;
     }
 
-    // Mengambil lokasi GPS.
     function ambilLokasi() {
         return new Promise((resolve, reject) => {
             if (!navigator.geolocation) {
@@ -573,7 +1062,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Meminta lokasi terlebih dahulu, baru mengaktifkan kamera.
     btnAktifkan.addEventListener('click', async function () {
         if (sedangMerekam || sedangMemproses) {
             return;
@@ -591,14 +1079,12 @@ document.addEventListener('DOMContentLoaded', function () {
             'Kamera masih terkunci.';
 
         try {
-            // LANGKAH 1: WAJIB mendapatkan lokasi.
             const posisi = await ambilLokasi();
 
             latitudeGPS = posisi.coords.latitude;
             longitudeGPS = posisi.coords.longitude;
             akurasiGPS = posisi.coords.accuracy;
 
-            // Jika akurasi terlalu rendah, minta pekerja mencoba lagi.
             if (akurasiGPS > 100) {
                 resetLokasi();
 
@@ -644,7 +1130,6 @@ document.addEventListener('DOMContentLoaded', function () {
             statusLokasi.textContent =
                 'Lokasi berhasil diperoleh. Mengaktifkan kamera...';
 
-            // LANGKAH 2: Kamera baru diminta setelah GPS berhasil.
             if (!navigator.mediaDevices ||
                 !navigator.mediaDevices.getUserMedia) {
                 throw new Error(
@@ -695,7 +1180,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Memulai perekaman setelah GPS dan kamera siap.
     btnMulai.addEventListener('click', function () {
         if (!lokasiTerverifikasi || !stream) {
             alert(
@@ -773,6 +1257,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     Math.ceil((selesaiMs - mulaiMs) / 1000)
                 );
 
+                durasiElement.textContent =
+                    formatDurasi(durasiDetik);
+
                 const mimeType = recorder.mimeType || 'video/webm';
 
                 const blob = new Blob(chunks, {
@@ -822,7 +1309,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 btnMulai.disabled = false;
                 btnAktifkan.disabled = false;
 
-                // Kamera dimatikan setelah rekaman selesai.
                 hentikanStream();
             };
 
@@ -875,7 +1361,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     btnStop.addEventListener('click', hentikanRekaman);
 
-    // Kirim laporan hanya jika GPS dan video tersedia.
     form.addEventListener('submit', function (event) {
         if (sedangMerekam || sedangMemproses) {
             event.preventDefault();
@@ -921,7 +1406,6 @@ document.addEventListener('DOMContentLoaded', function () {
             'Mengunggah video dan data GPS. Jangan tutup halaman...';
     });
 
-    // Kamera tidak boleh terus aktif ketika halaman ditinggalkan.
     window.addEventListener('pagehide', function () {
         if (timer) {
             clearInterval(timer);

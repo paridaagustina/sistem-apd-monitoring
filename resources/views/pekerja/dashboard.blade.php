@@ -1,148 +1,343 @@
-
 @extends('layouts.app')
 
 @section('title', 'Dashboard Pekerja - APDMONITOR')
+@section('page-heading', 'Dashboard Pekerja')
 
-@section('content')
-
+@push('styles')
 <style>
     .dashboard-pekerja {
         width: 100%;
     }
 
+    /* HERO */
     .dashboard-header {
-        background: linear-gradient(135deg, #2457d6, #4779e8);
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(120deg, #1747bd, #3678ee);
         color: white;
-        border-radius: 18px;
-        padding: 30px;
-        margin-bottom: 22px;
+        border-radius: 20px;
+        padding: 38px;
+        margin-bottom: 23px;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        gap: 20px;
-        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 25px;
+        min-height: 225px;
+        box-shadow: 0 12px 30px rgba(37, 99, 235, .17);
     }
 
-    .dashboard-header h1 {
-        margin: 12px 0 8px;
-        font-size: clamp(25px, 4vw, 32px);
+    .dashboard-header::after {
+        content: "";
+        position: absolute;
+        width: 340px;
+        height: 340px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.09);
+        right: 5%;
+        top: -170px;
     }
 
-    .dashboard-header p {
-        color: #e5edff;
-        line-height: 1.7;
-        max-width: 600px;
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 650px;
     }
 
     .badge-pekerja {
         display: inline-block;
-        background: #dce8ff;
-        color: #1945a8;
-        border-radius: 20px;
-        padding: 7px 13px;
+        background: rgba(255,255,255,.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,.3);
+        border-radius: 30px;
+        padding: 8px 14px;
         font-size: 11px;
-        font-weight: bold;
+        font-weight: 700;
+        letter-spacing: .5px;
     }
 
-    .dashboard-header .tombol {
+    .dashboard-header h1 {
+        margin: 17px 0 10px;
+        font-size: clamp(27px, 4vw, 36px);
+        font-weight: 800;
+    }
+
+    .dashboard-header p {
+        color: #e5edff;
+        line-height: 1.8;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .hero-button {
+        position: relative;
+        z-index: 2;
         background: white;
-        color: #2457d6;
+        color: #2055c9;
         white-space: nowrap;
     }
 
-    .dashboard-header .tombol:hover {
-        background: #edf2ff;
+    .hero-button:hover {
+        background: #edf3ff;
+        color: #1747bd;
     }
 
-    .statistik-pekerja {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
+    .hero-decoration {
+        position: absolute;
+        right: 17%;
+        bottom: 17px;
+        font-size: 90px;
+        opacity: .15;
+        transform: rotate(-12deg);
+    }
+
+    /* SECTION */
+    .dashboard-section {
         margin-bottom: 22px;
     }
 
-    .statistik-pekerja .kartu {
-        margin-bottom: 0;
+    .section-heading {
+        font-size: 17px;
+        font-weight: 800;
+        color: #172554;
+        margin: 0 0 8px;
     }
 
-    .ikon-statistik {
-        width: 42px;
-        height: 42px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-        background: #e8efff;
-        color: #2457d6;
-        font-size: 20px;
-        margin-bottom: 13px;
+    .section-description {
+        color: #718096;
+        font-size: 13px;
+        line-height: 1.7;
+        margin: 0;
     }
 
-    .dashboard-section {
-        margin-bottom: 20px;
-    }
-
-    .dashboard-section h2 {
-        margin-bottom: 8px;
-    }
-
-    .aksi-monitoring {
+    /* FIELD REPORT */
+    .field-report-card {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 18px;
-        flex-wrap: wrap;
+        gap: 20px;
+        border-left: 5px solid #5b91ff;
     }
 
-    .aksi-monitoring .tombol {
-        white-space: nowrap;
+    .field-report-info {
+        display: flex;
+        align-items: center;
+        gap: 17px;
+    }
+
+    .field-report-icon {
+        min-width: 58px;
+        height: 58px;
+        border-radius: 17px;
+        background: #eaf1ff;
+        color: #2563eb;
+        display: grid;
+        place-items: center;
+        font-size: 26px;
+    }
+
+    /* STATISTICS */
+    .statistik-pekerja {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 23px;
+    }
+
+    .stat-card {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 17px;
+        min-height: 145px;
+        transition: .2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px rgba(34,65,120,.09);
+    }
+
+    .stat-icon {
+        width: 65px;
+        height: 65px;
+        min-width: 65px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        font-size: 29px;
+    }
+
+    .stat-blue .stat-icon {
+        background: #e5efff;
+        color: #2563eb;
+    }
+
+    .stat-green .stat-icon {
+        background: #d9f8ee;
+        color: #07966e;
+    }
+
+    .stat-red .stat-icon {
+        background: #f0eaff;
+        color: #7950df;
+    }
+
+    .stat-label {
+        color: #718096;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .stat-number {
+        font-size: 32px;
+        font-weight: 800;
+        margin: 8px 0;
+        color: #172554;
+    }
+
+    .stat-blue .stat-number {
+        color: #2563eb;
+    }
+
+    .stat-green .stat-number {
+        color: #07966e;
+    }
+
+    .stat-red .stat-number {
+        color: #7950df;
+    }
+
+    /* MONITORING */
+    .monitoring-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        background: linear-gradient(120deg, #ffffff, #f2f7ff);
+    }
+
+    .monitoring-icon {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    /* TABLE */
+    .table-title {
+        font-size: 17px;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .table-subtitle {
+        color: #718096;
+        font-size: 13px;
+        margin: 7px 0 20px;
     }
 
     .tabel-dashboard {
         width: 100%;
         border-collapse: collapse;
-    }
-
-    .tabel-dashboard th,
-    .tabel-dashboard td {
-        padding: 13px 10px;
-        text-align: left;
-        border-bottom: 1px solid #e0e6ef;
+        min-width: 550px;
     }
 
     .tabel-dashboard th {
-        color: #65718a;
+        background: #f7f9fd;
+        color: #64748b;
         font-size: 12px;
+        font-weight: 700;
+    }
+
+    .tabel-dashboard td,
+    .tabel-dashboard th {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #edf1f7;
+    }
+
+    .tabel-dashboard tbody tr:hover {
+        background: #f8faff;
     }
 
     .kosong {
         text-align: center;
-        padding: 30px 15px;
-        color: #65718a;
+        padding: 45px 15px;
+        color: #718096;
     }
 
-    @media (max-width: 700px) {
+    .kosong-icon {
+        font-size: 43px;
+        margin-bottom: 12px;
+    }
+
+    .kosong strong {
+        display: block;
+        color: #172554;
+        font-size: 15px;
+    }
+
+    .kosong p {
+        font-size: 13px;
+        margin: 8px 0;
+    }
+
+    @media(max-width: 950px) {
         .statistik-pekerja {
             grid-template-columns: 1fr;
         }
 
+        .stat-card {
+            min-height: 115px;
+        }
+    }
+
+    @media(max-width: 600px) {
         .dashboard-header {
-            padding: 22px;
+            padding: 25px 20px;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
-        .aksi-monitoring {
-            align-items: flex-start;
+        .dashboard-header p {
+            font-size: 13px;
+        }
+
+        .hero-decoration {
+            right: 5%;
+            font-size: 65px;
+        }
+
+        .field-report-card,
+        .monitoring-card {
             flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .field-report-info {
+            align-items: flex-start;
+        }
+
+        .field-report-card .tombol,
+        .monitoring-card .tombol {
+            width: 100%;
+        }
+
+        .statistik-pekerja {
+            grid-template-columns: 1fr;
         }
     }
 </style>
+@endpush
+
+@section('content')
 
 <div class="dashboard-pekerja">
 
-    <!-- Sambutan -->
+    {{-- HERO --}}
     <div class="dashboard-header">
-        <div>
-            <span class="badge-pekerja">PEKERJA LAPANGAN</span>
+
+        <div class="hero-content">
+            <span class="badge-pekerja">🛡 PEKERJA LAPANGAN</span>
 
             <h1>Dashboard Pekerja</h1>
 
@@ -153,117 +348,138 @@
             </p>
         </div>
 
-        <a href="{{ route('pekerja.monitoring') }}" class="tombol">
+        <a href="{{ route('pekerja.monitoring') }}"
+           class="tombol hero-button">
             Mulai Monitoring APD →
         </a>
+
+        <div class="hero-decoration">🦺</div>
     </div>
-    {{-- Live Laporan Lapangan --}}
-<div class="kartu dashboard-section">
 
-    <div class="aksi-monitoring">
+    {{-- LAPORAN LAPANGAN --}}
+    <div class="kartu dashboard-section field-report-card">
+
+        <div class="field-report-info">
+            <div class="field-report-icon">📈</div>
+
+            <div>
+                <h2 class="section-heading">Laporan Lapangan</h2>
+
+                <p class="section-description">
+                    Rekam kondisi lapangan, lalu kirim video beserta
+                    informasi waktu kepada admin. Fitur ini terpisah
+                    dari pemeriksaan APD.
+                </p>
+            </div>
+        </div>
+
+        <a href="{{ route('pekerja.field-reports.index') }}"
+           class="tombol">
+            📷 Buka Laporan Lapangan →
+        </a>
+
+    </div>
+
+    {{-- STATISTIK --}}
+    <div class="statistik-pekerja">
+
+        <div class="kartu stat-card stat-blue">
+            <div class="stat-icon">📋</div>
+            <div>
+                <div class="stat-label">Total Pemeriksaan</div>
+                <div class="stat-number">
+                    {{ $stats['total'] ?? 0 }}
+                </div>
+                <span class="status" style="background:#e5efff;color:#2563eb;">
+                    Seluruh riwayat saya
+                </span>
+            </div>
+        </div>
+
+        <div class="kartu stat-card stat-green">
+            <div class="stat-icon">🛡️</div>
+            <div>
+                <div class="stat-label">APD Lengkap</div>
+                <div class="stat-number">
+                    {{ $stats['lengkap'] ?? 0 }}
+                </div>
+                <span class="status hijau">
+                    Memenuhi persyaratan
+                </span>
+            </div>
+        </div>
+
+        <div class="kartu stat-card stat-red">
+            <div class="stat-icon">⚠️</div>
+            <div>
+                <div class="stat-label">APD Tidak Lengkap</div>
+                <div class="stat-number">
+                    {{ $stats['tidak_lengkap'] ?? 0 }}
+                </div>
+                <span class="status merah">
+                    Perlu tindak lanjut
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    {{-- MONITORING --}}
+    <div class="kartu dashboard-section monitoring-card">
+
         <div>
-            <h2>Live Laporan Lapangan</h2>
+            <div class="monitoring-icon">🔍</div>
 
-            <p class="teks-redup">
-                Sudah sampai di lokasi? Rekam kondisi lapangan,
-                lalu kirim video beserta informasi waktu kepada admin.
-                Fitur ini terpisah dari pemeriksaan APD.
+            <h2 class="section-heading">
+                Monitoring Kelengkapan APD
+            </h2>
+
+            <p class="section-description">
+                Pastikan penggunaan helm, rompi, sepatu keselamatan,
+                kacamata pelindung, sarung tangan, serta masker
+                sesuai standar keselamatan kerja.
             </p>
         </div>
 
-        <a
-            href="{{ route('pekerja.field-reports.index') }}"
-            class="tombol">
-            Buka Laporan Lapangan
+        <a href="{{ route('pekerja.monitoring') }}" class="tombol">
+            Buka Monitoring →
         </a>
-    </div>
-
-</div>
-
-    <!-- Statistik Pemeriksaan -->
-    <div class="statistik-pekerja">
-
-        <div class="kartu">
-            <div class="ikon-statistik">📋</div>
-            <div class="teks-redup">Total Pemeriksaan</div>
-            <div class="angka">
-                {{ $stats['total'] ?? 0 }}
-            </div>
-            <span class="status hijau">Seluruh riwayat saya</span>
-        </div>
-
-        <div class="kartu">
-            <div class="ikon-statistik">✓</div>
-            <div class="teks-redup">APD Lengkap</div>
-            <div class="angka" style="color: #166534;">
-                {{ $stats['lengkap'] ?? 0 }}
-            </div>
-            <span class="status hijau">Memenuhi persyaratan</span>
-        </div>
-
-        <div class="kartu">
-            <div class="ikon-statistik">!</div>
-            <div class="teks-redup">APD Tidak Lengkap</div>
-            <div class="angka" style="color: #b91c1c;">
-                {{ $stats['tidak_lengkap'] ?? 0 }}
-            </div>
-            <span class="status merah">Perlu tindak lanjut</span>
-        </div>
 
     </div>
 
-    <!-- Informasi Monitoring -->
-    <div class="kartu dashboard-section">
-        <div class="aksi-monitoring">
-            <div>
-                <h2>Monitoring Kelengkapan APD</h2>
-
-                <p class="teks-redup">
-                    Lakukan pemeriksaan terhadap pekerja dan pastikan
-                    penggunaan helm, rompi, sepatu keselamatan,
-                    kacamata pelindung, sarung tangan, serta masker
-                    sesuai standar keselamatan kerja.
-                </p>
-            </div>
-
-            <a href="{{ route('pekerja.monitoring') }}" class="tombol">
-                Buka Monitoring
-            </a>
-        </div>
-    </div>
-
-    <!-- Riwayat Pemeriksaan -->
+    {{-- RIWAYAT PEMERIKSAAN --}}
     <div class="kartu dashboard-section">
 
-        <h2>Riwayat Pemeriksaan Saya</h2>
+        <h2 class="table-title">Riwayat Pemeriksaan Saya</h2>
 
-        <p class="teks-redup" style="margin-bottom: 18px;">
+        <p class="table-subtitle">
             Daftar pemeriksaan APD yang telah kamu lakukan.
         </p>
 
         @if($inspections->isEmpty())
 
             <div class="kosong">
-                <div style="font-size: 35px; margin-bottom: 10px;">📋</div>
+                <div class="kosong-icon">📋</div>
 
                 <strong>Belum Ada Riwayat Pemeriksaan</strong>
 
-                <p style="margin-top: 7px;">
+                <p>
                     Kamu belum melakukan pemeriksaan APD.
-                    Klik tombol Monitoring APD untuk memulai.
+                    Klik tombol di bawah untuk memulai.
                 </p>
 
-                <div style="margin-top: 18px;">
-                    <a href="{{ route('pekerja.monitoring') }}" class="tombol">
-                        Mulai Pemeriksaan
-                    </a>
-                </div>
+                <a href="{{ route('pekerja.monitoring') }}"
+                   class="tombol"
+                   style="margin-top:15px;">
+                    Mulai Pemeriksaan →
+                </a>
             </div>
 
         @else
 
             <div class="pembungkus-tabel">
                 <table class="tabel-dashboard">
+
                     <thead>
                         <tr>
                             <th>No.</th>
@@ -275,6 +491,7 @@
 
                     <tbody>
                         @foreach($inspections as $inspection)
+
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
 
@@ -295,21 +512,23 @@
                                 <td>
                                     @if($inspection->status === 'lengkap')
                                         <span class="status hijau">
-                                            Lengkap
+                                            ✓ Lengkap
                                         </span>
                                     @elseif($inspection->status === 'tidak_lengkap')
                                         <span class="status merah">
-                                            Tidak Lengkap
+                                            ✕ Tidak Lengkap
                                         </span>
                                     @else
-                                        <span class="status">
+                                        <span class="status" style="background:#edf2f7;color:#64748b;">
                                             {{ ucfirst(str_replace('_', ' ', $inspection->status ?? 'Belum diketahui')) }}
                                         </span>
                                     @endif
                                 </td>
                             </tr>
+
                         @endforeach
                     </tbody>
+
                 </table>
             </div>
 

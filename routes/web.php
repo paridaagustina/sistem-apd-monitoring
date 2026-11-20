@@ -1,13 +1,16 @@
+
 <?php
 
 use App\Http\Controllers\Ccv\CcvFormController;
 use App\Http\Controllers\Admin\CcvDashboardController;
+use App\Http\Controllers\Admin\HealthDashboardController;
 use App\Http\Controllers\ApdDashboardController;
 use App\Http\Controllers\ApdMonitoringController;
 use App\Http\Controllers\Admin\ApdItemController;
 use App\Http\Controllers\Admin\WorkerController;
 use App\Http\Controllers\Worker\FieldReportController;
 use App\Http\Controllers\Admin\AdminFieldReportController;
+use App\Http\Controllers\HealthCheckController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -58,7 +61,10 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
 
-        // Dashboard Admin
+        // ------------------------------------------
+        // DASHBOARD ADMIN
+        // ------------------------------------------
+
         Route::get('/dashboard', [
             ApdDashboardController::class,
             'admin',
@@ -156,6 +162,21 @@ Route::middleware(['auth', 'role:admin'])
             'show',
         ])->name('ccv.show');
 
+        // ------------------------------------------
+        // PEMERIKSAAN KESEHATAN - DASHBOARD ADMIN
+        // Admin melihat statistik dan hasil pemeriksaan
+        // ------------------------------------------
+
+        Route::get('/health-check', [
+            HealthDashboardController::class,
+            'index',
+        ])->name('health-check.index');
+
+        Route::get('/health-check/{healthCheck}', [
+            HealthDashboardController::class,
+            'show',
+        ])->name('health-check.show');
+
     });
 
 // ==================================================
@@ -167,7 +188,10 @@ Route::middleware(['auth', 'role:pekerja_lapangan'])
     ->name('pekerja.')
     ->group(function () {
 
-        // Dashboard Pekerja
+        // ------------------------------------------
+        // DASHBOARD PEKERJA
+        // ------------------------------------------
+
         Route::get('/dashboard', [
             ApdDashboardController::class,
             'pekerja',
@@ -205,7 +229,6 @@ Route::middleware(['auth', 'role:pekerja_lapangan'])
 
         // ------------------------------------------
         // CCV - FORMULIR PEKERJA
-        // Pegawai mengisi formulir CCV
         // ------------------------------------------
 
         Route::get('/ccv', [
@@ -218,6 +241,21 @@ Route::middleware(['auth', 'role:pekerja_lapangan'])
             'store',
         ])->middleware('throttle:10,1')
           ->name('ccv.store');
+
+        // ------------------------------------------
+        // PEMERIKSAAN KESEHATAN PETUGAS
+        // ------------------------------------------
+
+        Route::get('/health-check', [
+            HealthCheckController::class,
+            'create',
+        ])->name('health-check.create');
+
+        Route::post('/health-check', [
+            HealthCheckController::class,
+            'store',
+        ])->middleware('throttle:10,1')
+          ->name('health-check.store');
 
     });
 

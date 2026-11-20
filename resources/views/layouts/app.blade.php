@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -455,6 +456,12 @@
                     <span>✓</span> CCV Monitoring
                 </a>
 
+                {{-- MENU PEMERIKSAAN KESEHATAN ADMIN --}}
+                <a href="{{ route('admin.health-check.index') }}"
+                   class="menu-link {{ request()->routeIs('admin.health-check.*') ? 'active' : '' }}">
+                    <span>♡</span> Formulir Kesehatan
+                </a>
+
             @else
 
                 {{-- MENU PEKERJA --}}
@@ -478,6 +485,12 @@
                 <a href="{{ route('pekerja.ccv.create') }}"
                    class="menu-link {{ request()->routeIs('pekerja.ccv.*') ? 'active' : '' }}">
                     <span>✓</span> Formulir CCV
+                </a>
+
+                {{-- MENU PEMERIKSAAN KESEHATAN PEKERJA --}}
+                <a href="{{ route('pekerja.health-check.create') }}"
+                   class="menu-link {{ request()->routeIs('pekerja.health-check.*') ? 'active' : '' }}">
+                    <span>♡</span> Pemeriksaan Kesehatan Petugas
                 </a>
 
             @endif
@@ -531,8 +544,14 @@
                     @if(request()->routeIs('pekerja.ccv.*'))
                         Formulir CCV
 
+                    @elseif(request()->routeIs('pekerja.health-check.*'))
+                        Pemeriksaan Kesehatan Petugas
+
                     @elseif(request()->routeIs('admin.ccv.*'))
                         CCV Monitoring
+
+                    @elseif(request()->routeIs('admin.health-check.*'))
+                        Monitoring Kesehatan Petugas
 
                     @elseif(request()->routeIs('pekerja.field-reports.*'))
                         Live Laporan Lapangan

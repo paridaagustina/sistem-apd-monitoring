@@ -4,60 +4,70 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Worker;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class WorkerController extends Controller
 {
+    /**
+     * Menampilkan seluruh daftar pekerja dalam satu halaman.
+     */
     public function index()
     {
         $workers = Worker::with('user')
             ->orderBy('name')
-            ->paginate(10);
+            ->get();
 
         return view('admin.workers.index', compact('workers'));
     }
 
+    /**
+     * Menampilkan form tambah pekerja.
+     */
     public function create()
     {
-        $users = User::where('role', 'pekerja_lapangan')
-            ->whereDoesntHave('worker')
-            ->orderBy('name')
-            ->get();
-
-        return view('admin.workers.create', compact('users'));
+        return view('admin.workers.create');
     }
 
+    /**
+     * Menyimpan data pekerja baru.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => [
-                'required',
-                'integer',
-                Rule::exists('users', 'id')
-                    ->where('role', 'pekerja_lapangan'),
-                'unique:workers,user_id',
-            ],
-            'worker_code' => [
-                'required',
-                'string',
-                'max:30',
-                'alpha_dash',
-                'unique:workers,worker_code',
-            ],
             'name' => ['required', 'string', 'max:100'],
-            'department' => ['nullable', 'string', 'max:100'],
-            'position' => ['nullable', 'string', 'max:100'],
-            'notes' => ['nullable', 'string', 'max:2000'],
+            'photo' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
+            'position' => ['required', 'string', 'max:100'],
         ], [
-            'user_id.required' => 'Pilih akun pekerja.',
-            'user_id.unique' => 'Akun tersebut sudah terhubung dengan pekerja lain.',
-            'worker_code.required' => 'Nomor identitas pekerja wajib diisi.',
-            'worker_code.unique' => 'Nomor identitas pekerja sudah digunakan.',
-            'name.required' => 'Nama pekerja wajib diisi.',
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'photo.image' => 'File foto harus berupa gambar.',
+            'photo.mimes' => 'Format foto harus JPG, JPEG, PNG, atau WEBP.',
+            'photo.max' => 'Ukuran foto maksimal 2 MB.',
+            'position.required' => 'Jabatan wajib diisi.',
         ]);
 
+        // Membuat kode pekerja otomatis.
+        do {
+            $workerCode = 'WK-' . Str::upper(Str::random(8));
+        } while (Worker::where('worker_code', $workerCode)->exists());
+
+        // Menyimpan foto jika admin mengunggah foto.
+        if ($request->hasFile('photo')) {
+            $validated['photo'] = $request->file('photo')
+                ->store('workers', 'public');
+        }
+
+        // Mengisi kolom database yang tidak ditampilkan di form.
+        $validated['worker_code'] = $workerCode;
+        $validated['user_id'] = null;
+        $validated['department'] = null;
+        $validated['notes'] = null;
         $validated['is_active'] = true;
 
         Worker::create($validated);
@@ -67,46 +77,50 @@ class WorkerController extends Controller
             ->with('success', 'Data pekerja berhasil ditambahkan.');
     }
 
+    /**
+     * Menampilkan form edit pekerja.
+     */
     public function edit(Worker $worker)
     {
-        $users = User::where('role', 'pekerja_lapangan')
-            ->where(function ($query) use ($worker) {
-                $query->whereDoesntHave('worker')
-                    ->orWhere('id', $worker->user_id);
-            })
-            ->orderBy('name')
-            ->get();
-
-        return view(
-            'admin.workers.edit',
-            compact('worker', 'users')
-        );
+        return view('admin.workers.edit', compact('worker'));
     }
 
+    /**
+     * Memperbarui data pekerja.
+     */
     public function update(Request $request, Worker $worker)
     {
         $validated = $request->validate([
-            'user_id' => [
-                'required',
-                'integer',
-                Rule::exists('users', 'id')
-                    ->where('role', 'pekerja_lapangan'),
-                Rule::unique('workers', 'user_id')
-                    ->ignore($worker->id),
-            ],
-            'worker_code' => [
-                'required',
-                'string',
-                'max:30',
-                'alpha_dash',
-                Rule::unique('workers', 'worker_code')
-                    ->ignore($worker->id),
-            ],
             'name' => ['required', 'string', 'max:100'],
-            'department' => ['nullable', 'string', 'max:100'],
-            'position' => ['nullable', 'string', 'max:100'],
-            'notes' => ['nullable', 'string', 'max:2000'],
+            'photo' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
+            'position' => ['required', 'string', 'max:100'],
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'photo.image' => 'File foto harus berupa gambar.',
+            'photo.mimes' => 'Format foto harus JPG, JPEG, PNG, atau WEBP.',
+            'photo.max' => 'Ukuran foto maksimal 2 MB.',
+            'position.required' => 'Jabatan wajib diisi.',
         ]);
+
+        // Mengganti foto jika ada foto baru.
+        if ($request->hasFile('photo')) {
+            $fotoLama = $worker->photo;
+
+            $fotoBaru = $request->file('photo')
+                ->store('workers', 'public');
+
+            $validated['photo'] = $fotoBaru;
+
+            // Menghapus foto lama setelah foto baru berhasil disimpan.
+            if ($fotoLama) {
+                Storage::disk('public')->delete($fotoLama);
+            }
+        }
 
         $worker->update($validated);
 
@@ -115,6 +129,9 @@ class WorkerController extends Controller
             ->with('success', 'Data pekerja berhasil diperbarui.');
     }
 
+    /**
+     * Mengaktifkan atau menonaktifkan pekerja.
+     */
     public function toggleStatus(Worker $worker)
     {
         $worker->update([
@@ -129,5 +146,33 @@ class WorkerController extends Controller
                     ? 'Pekerja berhasil diaktifkan.'
                     : 'Pekerja berhasil dinonaktifkan.'
             );
+    }
+
+    /**
+     * Menghapus data pekerja.
+     */
+    public function destroy(Worker $worker)
+    {
+        // Memeriksa apakah pekerja masih memiliki riwayat inspeksi APD.
+        if ($worker->inspections()->exists()) {
+            return redirect()
+                ->route('admin.workers.index')
+                ->with(
+                    'error',
+                    'Data pekerja tidak dapat dihapus karena masih memiliki riwayat inspeksi APD.'
+                );
+        }
+
+        // Menghapus foto pekerja dari penyimpanan.
+        if ($worker->photo) {
+            Storage::disk('public')->delete($worker->photo);
+        }
+
+        // Menghapus data pekerja dari database.
+        $worker->delete();
+
+        return redirect()
+            ->route('admin.workers.index')
+            ->with('success', 'Data pekerja berhasil dihapus.');
     }
 }

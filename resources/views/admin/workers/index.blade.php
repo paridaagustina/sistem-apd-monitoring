@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title', 'Data Pekerja - APDMONITOR')
@@ -13,177 +14,67 @@
         box-sizing: border-box;
     }
 
-    /* HEADER */
     .pekerja-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 18px;
-        margin-bottom: 25px;
+        gap: 12px;
+        margin-bottom: 16px;
     }
 
-    .pekerja-title {
-        display: flex;
-        align-items: center;
-        gap: 13px;
-    }
-
-    .pekerja-icon {
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #eaf1ff;
-        border-radius: 14px;
-        font-size: 25px;
-        flex-shrink: 0;
-    }
-
-    .pekerja-title h2 {
+    .pekerja-header h2 {
         margin: 0 0 5px;
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 800;
     }
 
-    .pekerja-title p {
+    .pekerja-header p {
         margin: 0;
         color: #8291a8;
-        font-size: 13px;
-    }
-
-    /* BUTTON */
-    .halaman-pekerja .btn-pekerja {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        padding: 10px 14px;
-        border: none;
-        border-radius: 9px;
-        text-decoration: none;
-        cursor: pointer;
-        font-family: inherit;
         font-size: 12px;
-        font-weight: 800;
-        transition: .2s ease;
-        white-space: nowrap;
     }
 
     .btn-tambah-pekerja {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 13px;
         background: #2563eb;
         color: white;
-        box-shadow: 0 4px 12px #2563eb25;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 800;
     }
 
     .btn-tambah-pekerja:hover {
         background: #1d4ed8;
-        transform: translateY(-2px);
     }
 
-    .btn-edit-pekerja {
-        background: #fff4dc;
-        color: #a16207;
-    }
-
-    .btn-edit-pekerja:hover {
-        background: #ffebbd;
-    }
-
-    .btn-ubah-status {
-        background: #f1f5f9;
-        color: #475569;
-    }
-
-    .btn-ubah-status:hover {
-        background: #e2e8f0;
-    }
-
-    /* STATISTIK */
-    .pekerja-statistik {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 17px;
-        margin-bottom: 23px;
-    }
-
-    .pekerja-stat-card {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        padding: 19px;
-        background: white;
-        border: 1px solid #e9eef5;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px #25385808;
-    }
-
-    .stat-icon-pekerja {
-        width: 46px;
-        height: 46px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 13px;
-        font-size: 22px;
-        flex-shrink: 0;
-    }
-
-    .stat-total {
-        background: #eaf1ff;
-    }
-
-    .stat-aktif {
-        background: #e5f8ef;
-    }
-
-    .stat-nonaktif {
-        background: #fff1e8;
-    }
-
-    .stat-info-pekerja small {
-        display: block;
-        color: #8291a8;
-        font-size: 11px;
-        font-weight: 600;
-        margin-bottom: 5px;
-    }
-
-    .stat-info-pekerja strong {
-        display: block;
-        color: #172b4d;
-        font-size: 24px;
-        font-weight: 800;
-    }
-
-    /* ALERT */
     .pekerja-alert {
-        padding: 13px 16px;
-        border-radius: 10px;
-        margin-bottom: 17px;
-        font-size: 13px;
+        padding: 11px 14px;
+        border-radius: 9px;
+        margin-bottom: 13px;
+        font-size: 12px;
         font-weight: 600;
     }
 
     .alert-success {
         background: #e5f8ef;
         color: #047857;
-        border: 1px solid #bbf7d0;
     }
 
     .alert-error {
         background: #fff1f2;
         color: #be123c;
-        border: 1px solid #fecdd3;
     }
 
-    /* TABLE CARD */
     .pekerja-card {
         background: white;
         border: 1px solid #e9eef5;
-        border-radius: 16px;
-        padding: 21px;
+        border-radius: 13px;
+        padding: 15px;
         box-shadow: 0 5px 20px #25385808;
     }
 
@@ -192,13 +83,13 @@
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 18px;
+        gap: 9px;
+        margin-bottom: 13px;
     }
 
     .pekerja-card-heading h3 {
-        margin: 0 0 5px;
-        font-size: 16px;
+        margin: 0 0 4px;
+        font-size: 15px;
         font-weight: 800;
     }
 
@@ -209,201 +100,147 @@
     }
 
     .jumlah-pekerja {
-        padding: 7px 11px;
+        padding: 7px 10px;
         background: #eff6ff;
         color: #2563eb;
         border-radius: 20px;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 800;
     }
 
-    /* TABLE */
     .pekerja-table-wrap {
         overflow-x: auto;
         border: 1px solid #edf1f6;
-        border-radius: 11px;
+        border-radius: 9px;
     }
 
-    .halaman-pekerja table {
+    .pekerja-table {
         width: 100%;
-        min-width: 780px;
         border-collapse: collapse;
+        min-width: 450px;
     }
 
-    .halaman-pekerja th {
-        padding: 15px 13px;
+    .pekerja-table th {
+        padding: 9px 12px;
         background: #f8fafc;
         color: #64748b;
         font-size: 11px;
         font-weight: 800;
         text-align: left;
-        white-space: nowrap;
         border-bottom: 1px solid #edf1f6;
     }
 
-    .halaman-pekerja td {
-        padding: 15px 13px;
-        color: #475569;
-        font-size: 12px;
+    .pekerja-table td {
+        padding: 7px 12px;
         border-bottom: 1px solid #f1f5f9;
         vertical-align: middle;
+        font-size: 12px;
     }
 
-    .halaman-pekerja tbody tr:last-child td {
+    .pekerja-table tbody tr:last-child td {
         border-bottom: none;
     }
 
-    .halaman-pekerja tbody tr:hover {
+    .pekerja-table tbody tr:hover {
         background: #f8fbff;
     }
 
-    .nomor-pekerja {
-        color: #94a3b8;
-        font-weight: 700;
+    .identitas-pekerja {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
-    .kode-pekerja {
-        display: inline-block;
-        padding: 6px 9px;
+    .foto-pekerja,
+    .foto-default {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 1px solid #e5e7eb;
         background: #f1f5f9;
-        color: #475569;
-        border-radius: 7px;
-        font-family: monospace;
-        font-size: 11px;
-        font-weight: 800;
+    }
+
+    .foto-default {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #94a3b8;
+        font-size: 19px;
     }
 
     .nama-pekerja {
         color: #172b4d;
+        font-size: 11px;
         font-weight: 800;
+        text-transform: uppercase;
     }
 
-    /* BADGE */
-    .badge-pekerja {
+    .jabatan-pekerja {
+        color: #8291a8;
+        font-size: 11px;
+    }
+
+    .btn-edit-pekerja {
         display: inline-flex;
         align-items: center;
-        gap: 5px;
-        padding: 6px 10px;
-        border-radius: 20px;
-        font-size: 10px;
+        justify-content: center;
+        padding: 7px 10px;
+        background: #fff4dc;
+        color: #a16207;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 11px;
         font-weight: 800;
         white-space: nowrap;
     }
 
-    .badge-aktif {
-        background: #dcfce7;
-        color: #15803d;
+    .btn-edit-pekerja:hover {
+        background: #ffebbd;
     }
 
-    .badge-nonaktif {
-        background: #fee2e2;
-        color: #b91c1c;
-    }
-
-    /* ACTION */
-    .aksi-pekerja {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        flex-wrap: wrap;
-    }
-
-    .aksi-pekerja form {
-        margin: 0;
-    }
-
-    /* EMPTY STATE */
     .pekerja-empty {
-        padding: 55px 20px !important;
+        padding: 35px 15px !important;
         text-align: center;
-    }
-
-    .pekerja-empty-icon {
-        width: 70px;
-        height: 70px;
-        margin: 0 auto 17px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #eaf1ff;
-        border-radius: 20px;
-        font-size: 32px;
+        color: #94a3b8;
     }
 
     .pekerja-empty strong {
         display: block;
+        margin-bottom: 6px;
         color: #334155;
-        font-size: 14px;
-        margin-bottom: 7px;
-    }
-
-    .pekerja-empty p {
-        margin: 0;
-        color: #94a3b8;
-        font-size: 12px;
-    }
-
-    /* PAGINATION */
-    .pekerja-pagination {
-        margin-top: 20px;
-    }
-
-    @media(max-width: 850px) {
-        .pekerja-statistik {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
     }
 
     @media(max-width: 600px) {
+        .pekerja-card {
+            padding: 11px;
+        }
+
         .pekerja-header {
             align-items: stretch;
         }
 
-        .pekerja-header > a {
-            width: 100%;
-        }
-
-        .pekerja-statistik {
-            grid-template-columns: 1fr;
-        }
-
-        .pekerja-card {
-            padding: 13px;
-        }
-
-        .pekerja-title h2 {
-            font-size: 20px;
+        .btn-tambah-pekerja {
+            justify-content: center;
         }
     }
 </style>
-
 
 <div class="halaman-pekerja">
 
     {{-- HEADER --}}
     <div class="pekerja-header">
-
-        <div class="pekerja-title">
-
-            <div class="pekerja-icon">
-                👷
-            </div>
-
-            <div>
-                <h2>Data Pekerja</h2>
-                <p>Kelola identitas pekerja yang akan diperiksa.</p>
-            </div>
-
+        <div>
+            <h2>Data Pekerja</h2>
+            <p>Informasi nama dan jabatan pekerja lapangan.</p>
         </div>
 
         <a href="{{ route('admin.workers.create') }}"
-           class="btn-pekerja btn-tambah-pekerja">
-            <span>＋</span>
-            Tambah Pekerja
+           class="btn-tambah-pekerja">
+            ＋ Tambah Pekerja
         </a>
-
     </div>
-
 
     {{-- NOTIFIKASI --}}
     @if(session('success'))
@@ -418,81 +255,28 @@
         </div>
     @endif
 
-
-    {{-- STATISTIK --}}
-    <div class="pekerja-statistik">
-
-        <div class="pekerja-stat-card">
-            <div class="stat-icon-pekerja stat-total">
-                👥
-            </div>
-
-            <div class="stat-info-pekerja">
-                <small>Total Pekerja</small>
-                <strong>{{ $workers->total() }}</strong>
-            </div>
-        </div>
-
-
-        <div class="pekerja-stat-card">
-            <div class="stat-icon-pekerja stat-aktif">
-                ✅
-            </div>
-
-            <div class="stat-info-pekerja">
-                <small>Pekerja Aktif</small>
-                <strong>
-                    {{ $workers->getCollection()->where('is_active', true)->count() }}
-                </strong>
-            </div>
-        </div>
-
-
-        <div class="pekerja-stat-card">
-            <div class="stat-icon-pekerja stat-nonaktif">
-                ⏸️
-            </div>
-
-            <div class="stat-info-pekerja">
-                <small>Pekerja Nonaktif</small>
-                <strong>
-                    {{ $workers->getCollection()->where('is_active', false)->count() }}
-                </strong>
-            </div>
-        </div>
-
-    </div>
-
-
     {{-- DAFTAR PEKERJA --}}
     <div class="pekerja-card">
 
         <div class="pekerja-card-heading">
-
             <div>
                 <h3>Daftar Data Pekerja</h3>
-                <p>Informasi identitas dan status pekerja lapangan.</p>
+                <p>Informasi foto, nama, dan jabatan pekerja lapangan.</p>
             </div>
 
             <span class="jumlah-pekerja">
-                {{ $workers->total() }} Data Pekerja
+                {{ $workers->count() }} Data Pekerja
             </span>
-
         </div>
-
 
         <div class="pekerja-table-wrap">
 
-            <table>
+            <table class="pekerja-table">
 
                 <thead>
                     <tr>
-                        <th>No.</th>
-                        <th>ID Pekerja</th>
-                        <th>Nama</th>
-                        <th>Departemen</th>
+                        <th>Nama Pekerja</th>
                         <th>Jabatan</th>
-                        <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -503,92 +287,80 @@
 
                         <tr>
 
-                            <td class="nomor-pekerja">
-                                {{ $workers->firstItem() + $loop->index }}
-                            </td>
-
+                            {{-- FOTO DAN NAMA --}}
                             <td>
-                                <span class="kode-pekerja">
-                                    {{ $worker->worker_code }}
-                                </span>
-                            </td>
+                                <div class="identitas-pekerja">
 
-                            <td>
-                                <span class="nama-pekerja">
-                                    {{ $worker->name }}
-                                </span>
-                            </td>
+                                    @if($worker->photo && Storage::disk('public')->exists($worker->photo))
+                                        <img
+                                            src="{{ asset('storage/' . $worker->photo) }}"
+                                            alt="Foto {{ $worker->name }}"
+                                            class="foto-pekerja"
+                                        >
+                                    @else
+                                        <div class="foto-default">
+                                            👤
+                                        </div>
+                                    @endif
 
-                            <td>
-                                {{ $worker->department ?: '-' }}
-                            </td>
-
-                            <td>
-                                {{ $worker->position ?: '-' }}
-                            </td>
-
-                            <td>
-                                @if($worker->is_active)
-                                    <span class="badge-pekerja badge-aktif">
-                                        ● Aktif
-                                    </span>
-                                @else
-                                    <span class="badge-pekerja badge-nonaktif">
-                                        ● Nonaktif
-                                    </span>
-                                @endif
-                            </td>
-
-                            <td>
-
-                                <div class="aksi-pekerja">
-
-                                    <a class="btn-pekerja btn-edit-pekerja"
-                                       href="{{ route('admin.workers.edit', $worker) }}">
-                                        ✏️ Edit
-                                    </a>
-
-                                    <form
-                                        method="POST"
-                                        action="{{ route('admin.workers.toggle-status', $worker) }}"
-                                        onsubmit="return confirm('Yakin ingin mengubah status pekerja ini?')">
-
-                                        @csrf
-                                        @method('PATCH')
-
-                                        <button class="btn-pekerja btn-ubah-status"
-                                                type="submit">
-
-                                            {{ $worker->is_active
-                                                ? '⏸️ Nonaktifkan'
-                                                : '▶️ Aktifkan' }}
-
-                                        </button>
-
-                                    </form>
+                                    <div class="nama-pekerja">
+                                        {{ $worker->name }}
+                                    </div>
 
                                 </div>
-
                             </td>
 
+                            {{-- JABATAN --}}
+                            <td>
+                                <span class="jabatan-pekerja">
+                                    {{ $worker->position ?: '-' }}
+                                </span>
+                            </td>
+
+                            {{-- AKSI --}}
+                            <td>
+    <div style="display: flex; align-items: center; gap: 7px;">
+
+        {{-- TOMBOL EDIT --}}
+        <a href="{{ route('admin.workers.edit', $worker) }}"
+           class="btn-edit-pekerja">
+            ✏️ Edit
+        </a>
+
+        {{-- TOMBOL HAPUS --}}
+        <form action="{{ route('admin.workers.destroy', $worker) }}"
+              method="POST"
+              onsubmit="return confirm('Yakin ingin menghapus data pekerja {{ addslashes($worker->name) }}? Data yang dihapus tidak dapat dikembalikan.');">
+
+            @csrf
+            @method('DELETE')
+
+            <button type="submit"
+                style="
+                    padding: 7px 10px;
+                    background: #fee2e2;
+                    color: #dc2626;
+                    border: none;
+                    border-radius: 7px;
+                    font-size: 11px;
+                    font-weight: 800;
+                    cursor: pointer;
+                ">
+                🗑 Hapus
+            </button>
+
+        </form>
+
+    </div>
+</td>
                         </tr>
 
                     @empty
 
                         <tr>
-                            <td colspan="7" class="pekerja-empty">
-
-                                <div class="pekerja-empty-icon">
-                                    👷
-                                </div>
-
+                            <td colspan="3" class="pekerja-empty">
                                 <strong>Belum Ada Data Pekerja</strong>
-
-                                <p>
-                                    Data pekerja belum tersedia.
-                                    Silakan tambahkan data pekerja terlebih dahulu.
-                                </p>
-
+                                Silakan tambahkan data pekerja terlebih dahulu.
                             </td>
                         </tr>
 
@@ -599,14 +371,6 @@
             </table>
 
         </div>
-
-
-        {{-- PAGINATION --}}
-        @if($workers->hasPages())
-            <div class="pekerja-pagination">
-                {{ $workers->links() }}
-            </div>
-        @endif
 
     </div>
 

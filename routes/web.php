@@ -118,6 +118,12 @@ Route::middleware(['auth', 'role:admin'])
             [WorkerController::class, 'toggleStatus']
         )->name('workers.toggle-status');
 
+        // HAPUS DATA PEKERJA
+        Route::delete('/workers/{worker}', [
+            WorkerController::class,
+            'destroy',
+        ])->name('workers.destroy');
+
         // ------------------------------------------
         // LAPORAN LAPANGAN
         // ------------------------------------------

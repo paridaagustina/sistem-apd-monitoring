@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Worker extends Model
 {
+    protected $table = 'workers';
+
     protected $fillable = [
         'user_id',
         'worker_code',
         'name',
+        'photo',
         'department',
         'position',
         'is_active',

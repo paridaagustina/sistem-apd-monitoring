@@ -87,18 +87,21 @@
     */
 
     .today-chart {
-        width:100%;
-        max-width:650px;
-        min-height:220px;
-        margin:10px auto 25px;
-        padding:25px 20px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        gap:55px;
-        flex-wrap:nowrap;
-        box-sizing:border-box;
-    }
+    width:100%;
+    max-width:650px;
+    min-height:220px;
+    margin:10px auto 25px;
+    padding:25px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:55px;
+    flex-wrap:nowrap;
+    box-sizing:border-box;
+
+    /* Geser diagram sedikit ke kanan */
+    transform: translateX(100px);
+}
 
     .donut {
         width:180px;

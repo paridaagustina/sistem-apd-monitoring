@@ -11,15 +11,26 @@ use Illuminate\Support\Str;
 class WorkerController extends Controller
 {
     /**
-     * Menampilkan seluruh daftar pekerja dalam satu halaman.
+     * Menampilkan seluruh daftar pekerja dan fitur pencarian.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = trim($request->query('search', ''));
+
         $workers = Worker::with('user')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('position', 'like', '%' . $search . '%');
+                });
+            })
             ->orderBy('name')
             ->get();
 
-        return view('admin.workers.index', compact('workers'));
+        return view('admin.workers.index', compact(
+            'workers',
+            'search'
+        ));
     }
 
     /**

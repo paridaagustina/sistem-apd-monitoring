@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\HealthCheck;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class HealthCheckController extends Controller
 {
@@ -76,7 +79,7 @@ class HealthCheckController extends Controller
     /**
      * Menampilkan formulir pemeriksaan kesehatan.
      */
-    public function create()
+    public function create(): View
     {
         $options = $this->formOptions();
 
@@ -86,11 +89,10 @@ class HealthCheckController extends Controller
     /**
      * Menyimpan hasil pemeriksaan kesehatan.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $options = $this->formOptions();
 
-        // Validasi input formulir.
         $validated = $request->validate([
             'nama_petugas' => [
                 'required',
@@ -149,7 +151,7 @@ class HealthCheckController extends Controller
             'hasil_oximeter.max' => 'Nilai oximeter maksimal 100%.',
         ]);
 
-        // Rentang tekanan darah normal berdasarkan kategori usia.
+        // Rentang tekanan darah berdasarkan kategori usia.
         $ranges = [
             'Remaja (14-18 Tahun)' => [
                 'sistolik' => [90, 120],
@@ -174,32 +176,27 @@ class HealthCheckController extends Controller
 
         $range = $ranges[$validated['usia']];
 
-        // Klasifikasi tekanan sistolik.
         $statusSistolik = $this->classifyBloodPressure(
             (int) $validated['sistolik'],
             $range['sistolik'][0],
             $range['sistolik'][1]
         );
 
-        // Klasifikasi tekanan diastolik.
         $statusDiastolik = $this->classifyBloodPressure(
             (int) $validated['diastolik'],
             $range['diastolik'][0],
             $range['diastolik'][1]
         );
 
-        // Status tekanan darah keseluruhan.
         $statusTensi = (
             $statusSistolik === 'Normal' &&
             $statusDiastolik === 'Normal'
         ) ? 'Normal' : 'Tidak Normal';
 
-        // Klasifikasi hasil oximeter.
         $statusOximeter = (int) $validated['hasil_oximeter'] >= 94
             ? 'Normal'
             : 'Tidak Normal';
 
-        // Rekomendasi otomatis.
         $kesimpulan = (
             $statusTensi === 'Normal' &&
             $statusOximeter === 'Normal'
@@ -207,9 +204,8 @@ class HealthCheckController extends Controller
             ? 'SIAP BEKERJA'
             : 'TIDAK DISARANKAN BEKERJA';
 
-        // Simpan data pemeriksaan ke database.
         HealthCheck::create([
-            'user_id' => $request->user()->id,
+            'user_id' => Auth::id(),
 
             'nama_petugas' => $validated['nama_petugas'],
             'unit' => $validated['unit'],
@@ -233,6 +229,46 @@ class HealthCheckController extends Controller
         return redirect()
             ->route('pekerja.health-check.create')
             ->with('success', 'Pemeriksaan kesehatan berhasil disimpan.');
+    }
+
+    /**
+     * Menampilkan riwayat pemeriksaan milik akun yang login.
+     */
+    public function history(Request $request): View
+    {
+        $userId = Auth::id();
+
+        $namaPetugas = $request->query('nama_petugas');
+
+        $healthChecks = HealthCheck::where('user_id', $userId)
+            ->when($namaPetugas, function ($query) use ($namaPetugas) {
+                $query->where('nama_petugas', $namaPetugas);
+            })
+            ->orderByDesc('tanggal_periksa')
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('pekerja.health-check.history', compact(
+            'healthChecks',
+            'namaPetugas'
+        ));
+    }
+
+    /**
+     * Menampilkan detail pemeriksaan milik akun yang login.
+     */
+    public function detail(HealthCheck $healthCheck): View
+    {
+        // Memastikan pemeriksaan merupakan milik akun yang login.
+        abort_unless(
+            (int) $healthCheck->user_id === (int) Auth::id(),
+            403
+        );
+
+        return view('pekerja.health-check.detail', compact(
+            'healthCheck'
+        ));
     }
 
     /**

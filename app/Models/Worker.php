@@ -40,4 +40,16 @@ class Worker extends Model
             'worker_id'
         );
     }
+
+    /**
+     * Riwayat pemeriksaan kesehatan petugas.
+     */
+    public function healthChecks(): HasMany
+    {
+        return $this->hasMany(
+            HealthCheck::class,
+            'nama_petugas',
+            'name'
+        );
+    }
 }

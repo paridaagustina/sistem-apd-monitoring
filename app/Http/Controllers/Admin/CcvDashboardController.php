@@ -10,28 +10,50 @@ class CcvDashboardController extends Controller
 {
     public function index()
     {
+        // Mengambil data laporan CCV
         $observations = CcvObservation::with('user')
             ->latest()
             ->paginate(10);
 
+        // Total seluruh laporan
         $totalObservations = CcvObservation::count();
 
+        // Total laporan hari ini
         $totalToday = CcvObservation::whereDate(
             'submitted_at',
             today()
         )->count();
 
-        $totalRC1 = CcvObservation::where('risk_code', 'RC1')->count();
+        // Total laporan RC1
+        $totalRC1 = CcvObservation::where(
+            'risk_code',
+            'RC1'
+        )->count();
 
-        $totalYa = CcvAnswer::where('answer', 'ya')->count();
+        // Total laporan RC3
+        $totalRC3 = CcvObservation::where(
+            'risk_code',
+            'RC3'
+        )->count();
 
-        $totalTidak = CcvAnswer::where('answer', 'tidak')->count();
+        // Total jawaban Ya
+        $totalYa = CcvAnswer::where(
+            'answer',
+            'ya'
+        )->count();
+
+        // Total jawaban Tidak
+        $totalTidak = CcvAnswer::where(
+            'answer',
+            'tidak'
+        )->count();
 
         return view('admin.ccv.index', compact(
             'observations',
             'totalObservations',
             'totalToday',
             'totalRC1',
+            'totalRC3',
             'totalYa',
             'totalTidak'
         ));

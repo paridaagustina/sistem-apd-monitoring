@@ -3,122 +3,69 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\HealthCheck;
+use App\Models\CcvObservation;
+use App\Models\CcvAnswer;
 
-class HealthDashboardController extends Controller
+class CcvDashboardController extends Controller
 {
-    /**
-     * Daftar nama petugas yang tersedia pada formulir kesehatan.
-     */
-    private function petugasNames(): array
-    {
-        return [
-            'MUHAMMAD PAISAL ALPARISI',
-            'SAMSIR NUR ALAM',
-            'ALPI YANOOR',
-            'RAHMADI',
-            'TRIYONO',
-            'MUHAMMAD NOFIE',
-            'FAUZI',
-            'IMAN SAPUTRA',
-            'FAHRIANNOR',
-            'MASRI',
-            'NANANG ISWAHYUDI',
-            'MAKSUM',
-            'AGUS SUGIYONO',
-            'HANDOYO SAPUTRO',
-            'IWAN HARTONO',
-            'SUBHAN RAMADHAN PRATAMA',
-            'AHMAD RIFANI',
-            'HENDRA',
-            'MUHAMAD RENALDI',
-            'AKHMAD KAMAL FAHRIYANUR',
-            'AHMAD ANSOR',
-            'SLAMET SETIAWAN',
-            'MUHAMMAD KHALILUR RAHMAN',
-            'SUKMA KELANA PUTRA',
-            'ARJUN PRASETYO W',
-            'MUHAMMAD AGUS RIDANI',
-            'ABDUL MAJID',
-            "MUHAMMAD RAPI'I AKBAR",
-            'ASTIMAWANTO',
-            'DWI PUSPITA SARI',
-        ];
-    }
-
     public function index()
     {
-        $petugasNames = $this->petugasNames();
+        // Mengambil seluruh laporan CCV
+        $observations = CcvObservation::with('user')
+            ->latest()
+            ->paginate(10);
 
-        // Mengambil nama petugas yang sudah pernah diperiksa.
-        $examinedNames = HealthCheck::query()
-            ->whereIn('nama_petugas', $petugasNames)
-            ->distinct()
-            ->pluck('nama_petugas');
+        // Total seluruh laporan CCV
+        $totalObservations = CcvObservation::count();
 
-        $notExaminedNames = collect($petugasNames)
-            ->diff($examinedNames)
-            ->values();
-
-        $totalPetugas = count($petugasNames);
-        $totalSudahDiperiksa = $examinedNames->count();
-        $totalBelumDiperiksa = $notExaminedNames->count();
-
-        // Menghitung seluruh riwayat pemeriksaan.
-        $totalPemeriksaan = HealthCheck::count();
-
-        $totalHariIni = HealthCheck::whereDate(
-            'tanggal_periksa',
+        // Total laporan CCV hari ini
+        $totalToday = CcvObservation::whereDate(
+            'submitted_at',
             today()
         )->count();
 
-        // Menghitung hasil kesimpulan pemeriksaan.
-        $totalSiapBekerja = HealthCheck::where(
-            'kesimpulan',
-            'SIAP BEKERJA'
+        // Total laporan RC1
+        $totalRC1 = CcvObservation::where(
+            'risk_code',
+            'RC1'
         )->count();
 
-        $totalTidakDisarankan = HealthCheck::where(
-            'kesimpulan',
-            'TIDAK DISARANKAN BEKERJA'
+        // Total laporan RC3
+        $totalRC3 = CcvObservation::where(
+            'risk_code',
+            'RC3'
         )->count();
 
-        // Persentase petugas yang sudah diperiksa.
-        $persenSudahDiperiksa = $totalPetugas > 0
-            ? round(($totalSudahDiperiksa / $totalPetugas) * 100)
-            : 0;
+        // Total jawaban Ya
+        $totalYa = CcvAnswer::where(
+            'answer',
+            'ya'
+        )->count();
 
-        $persenBelumDiperiksa = $totalPetugas > 0
-            ? round(($totalBelumDiperiksa / $totalPetugas) * 100)
-            : 0;
+        // Total jawaban Tidak
+        $totalTidak = CcvAnswer::where(
+            'answer',
+            'tidak'
+        )->count();
 
-        // Riwayat pemeriksaan terbaru.
-        $healthChecks = HealthCheck::with('user')
-            ->orderByDesc('tanggal_periksa')
-            ->orderByDesc('id')
-            ->paginate(10);
-
-        return view('admin.health-check.index', compact(
-            'totalPetugas',
-            'totalSudahDiperiksa',
-            'totalBelumDiperiksa',
-            'totalPemeriksaan',
-            'totalHariIni',
-            'totalSiapBekerja',
-            'totalTidakDisarankan',
-            'persenSudahDiperiksa',
-            'persenBelumDiperiksa',
-            'notExaminedNames',
-            'healthChecks'
+        return view('admin.ccv.index', compact(
+            'observations',
+            'totalObservations',
+            'totalToday',
+            'totalRC1',
+            'totalRC3',
+            'totalYa',
+            'totalTidak'
         ));
     }
 
-    public function show(HealthCheck $healthCheck)
+    public function show(CcvObservation $observation)
     {
-        $healthCheck->load('user');
+        $observation->load([
+            'user',
+            'answers.evidences'
+        ]);
 
-        return view('admin.health-check.show', compact(
-            'healthCheck'
-        ));
+        return view('admin.ccv.show', compact('observation'));
     }
 }

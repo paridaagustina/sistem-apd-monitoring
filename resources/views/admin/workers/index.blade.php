@@ -108,6 +108,71 @@
         font-weight: 800;
     }
 
+    /* PENCARIAN PEKERJA */
+    .pekerja-search {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        flex-wrap: wrap;
+        margin: 16px 0;
+    }
+
+    .pekerja-search-input {
+        flex: 1;
+        min-width: 220px;
+        height: 38px;
+        padding: 0 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        outline: none;
+        background: #fff;
+        color: #334155;
+        font-size: 11px;
+        transition: .2s;
+    }
+
+    .pekerja-search-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+    }
+
+    .btn-cari-pekerja {
+        height: 38px;
+        padding: 0 16px;
+        border: none;
+        border-radius: 8px;
+        background: #2563eb;
+        color: white;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .btn-cari-pekerja:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-reset-pekerja {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 38px;
+        padding: 0 14px;
+        border-radius: 8px;
+        background: #f1f5f9;
+        color: #64748b;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 800;
+        transition: .2s;
+    }
+
+    .btn-reset-pekerja:hover {
+        background: #e2e8f0;
+        color: #334155;
+    }
+
     .pekerja-table-wrap {
         overflow-x: auto;
         border: 1px solid #edf1f6;
@@ -224,6 +289,21 @@
         .btn-tambah-pekerja {
             justify-content: center;
         }
+
+        .pekerja-search {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .pekerja-search-input {
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .btn-cari-pekerja,
+        .btn-reset-pekerja {
+            width: 100%;
+        }
     }
 </style>
 
@@ -249,6 +329,12 @@
         </div>
     @endif
 
+    @if(session('error'))
+        <div class="pekerja-alert alert-error">
+            ⚠ {{ session('error') }}
+        </div>
+    @endif
+
     @if($errors->any())
         <div class="pekerja-alert alert-error">
             ⚠ Terdapat kesalahan. Silakan periksa kembali data Anda.
@@ -268,6 +354,33 @@
                 {{ $workers->count() }} Data Pekerja
             </span>
         </div>
+
+        {{-- FORM PENCARIAN --}}
+        <form method="GET"
+              action="{{ route('admin.workers.index') }}"
+              class="pekerja-search">
+
+            <input
+                type="text"
+                name="search"
+                class="pekerja-search-input"
+                value="{{ $search ?? request('search') }}"
+                placeholder="Cari nama atau jabatan pekerja..."
+                autocomplete="off"
+            >
+
+            <button type="submit" class="btn-cari-pekerja">
+                🔍 Cari
+            </button>
+
+            @if(request('search'))
+                <a href="{{ route('admin.workers.index') }}"
+                   class="btn-reset-pekerja">
+                    Reset
+                </a>
+            @endif
+
+        </form>
 
         <div class="pekerja-table-wrap">
 
@@ -319,48 +432,60 @@
 
                             {{-- AKSI --}}
                             <td>
-    <div style="display: flex; align-items: center; gap: 7px;">
+                                <div style="display: flex; align-items: center; gap: 7px;">
 
-        {{-- TOMBOL EDIT --}}
-        <a href="{{ route('admin.workers.edit', $worker) }}"
-           class="btn-edit-pekerja">
-            ✏️ Edit
-        </a>
+                                    {{-- TOMBOL EDIT --}}
+                                    <a href="{{ route('admin.workers.edit', $worker) }}"
+                                       class="btn-edit-pekerja">
+                                        ✏️ Edit
+                                    </a>
 
-        {{-- TOMBOL HAPUS --}}
-        <form action="{{ route('admin.workers.destroy', $worker) }}"
-              method="POST"
-              onsubmit="return confirm('Yakin ingin menghapus data pekerja {{ addslashes($worker->name) }}? Data yang dihapus tidak dapat dikembalikan.');">
+                                    {{-- TOMBOL HAPUS --}}
+                                    <form action="{{ route('admin.workers.destroy', $worker) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('Yakin ingin menghapus data pekerja {{ addslashes($worker->name) }}? Data yang dihapus tidak dapat dikembalikan.');">
 
-            @csrf
-            @method('DELETE')
+                                        @csrf
+                                        @method('DELETE')
 
-            <button type="submit"
-                style="
-                    padding: 7px 10px;
-                    background: #fee2e2;
-                    color: #dc2626;
-                    border: none;
-                    border-radius: 7px;
-                    font-size: 11px;
-                    font-weight: 800;
-                    cursor: pointer;
-                ">
-                🗑 Hapus
-            </button>
+                                        <button type="submit"
+                                            style="
+                                                padding: 7px 10px;
+                                                background: #fee2e2;
+                                                color: #dc2626;
+                                                border: none;
+                                                border-radius: 7px;
+                                                font-size: 11px;
+                                                font-weight: 800;
+                                                cursor: pointer;
+                                            ">
+                                            🗑 Hapus
+                                        </button>
 
-        </form>
+                                    </form>
 
-    </div>
-</td>
+                                </div>
+                            </td>
                         </tr>
 
                     @empty
 
                         <tr>
                             <td colspan="3" class="pekerja-empty">
-                                <strong>Belum Ada Data Pekerja</strong>
-                                Silakan tambahkan data pekerja terlebih dahulu.
+                                <strong>
+                                    @if(request('search'))
+                                        Data Pekerja Tidak Ditemukan
+                                    @else
+                                        Belum Ada Data Pekerja
+                                    @endif
+                                </strong>
+
+                                @if(request('search'))
+                                    Tidak ditemukan pekerja dengan nama atau jabatan
+                                    "{{ request('search') }}".
+                                @else
+                                    Silakan tambahkan data pekerja terlebih dahulu.
+                                @endif
                             </td>
                         </tr>
 

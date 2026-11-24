@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title', 'Dashboard CCV - APDMONITOR')
@@ -41,9 +42,10 @@
         font-weight: 800;
     }
 
+    /* STATISTIK */
     .ccv-stats {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 17px;
         margin-bottom: 23px;
     }
@@ -54,12 +56,14 @@
         border: 1px solid #e9eef5;
         border-radius: 15px;
         box-shadow: 0 4px 15px rgba(30, 64, 110, .035);
+        min-width: 0;
     }
 
     .ccv-stat-top {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 8px;
         margin-bottom: 17px;
     }
 
@@ -69,6 +73,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
         border-radius: 12px;
         font-size: 20px;
     }
@@ -78,6 +83,7 @@
         color: #8997aa;
         font-size: 11px;
         font-weight: 700;
+        line-height: 1.5;
     }
 
     .ccv-stat h3 {
@@ -91,7 +97,9 @@
     .green-bg { background: #e7f9ef; color: #059669; }
     .orange-bg { background: #fff4e5; color: #d97706; }
     .purple-bg { background: #f2eaff; color: #7c3aed; }
+    .teal-bg { background: #e0f7f5; color: #0f9488; }
 
+    /* PANEL */
     .ccv-panel {
         background: #fff;
         border: 1px solid #e9eef5;
@@ -122,6 +130,7 @@
         color: #94a3b8;
     }
 
+    /* RINGKASAN JAWABAN */
     .answer-summary {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -131,6 +140,7 @@
     .answer-info {
         display: flex;
         justify-content: space-between;
+        gap: 10px;
         font-size: 12px;
         font-weight: 700;
         margin-bottom: 9px;
@@ -147,11 +157,13 @@
     .answer-fill {
         height: 100%;
         border-radius: 20px;
+        transition: width .3s ease;
     }
 
     .answer-yes { background: #10b981; }
     .answer-no { background: #ef4444; }
 
+    /* TABEL */
     .ccv-table-wrap {
         width: 100%;
         overflow-x: auto;
@@ -179,6 +191,7 @@
         border-bottom: 1px solid #edf1f7;
         color: #475569;
         font-size: 12px;
+        vertical-align: middle;
     }
 
     .ccv-table tr:last-child td {
@@ -192,12 +205,26 @@
 
     .risk-badge {
         display: inline-block;
-        background: #eaf1ff;
-        color: #2563eb;
         border-radius: 7px;
         padding: 6px 10px;
         font-size: 10px;
         font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .risk-rc1 {
+        background: #eaf1ff;
+        color: #2563eb;
+    }
+
+    .risk-rc3 {
+        background: #e0f7f5;
+        color: #0f9488;
+    }
+
+    .risk-other {
+        background: #f1f5f9;
+        color: #64748b;
     }
 
     .detail-btn {
@@ -209,6 +236,8 @@
         text-decoration: none;
         font-size: 11px;
         font-weight: 700;
+        white-space: nowrap;
+        transition: .2s ease;
     }
 
     .detail-btn:hover {
@@ -226,15 +255,26 @@
         margin-top: 18px;
     }
 
-    @media(max-width: 1000px) {
+    /* RESPONSIVE */
+    @media(max-width: 1200px) {
         .ccv-stats {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media(max-width: 850px) {
+        .ccv-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 
     @media(max-width: 600px) {
+        .ccv-heading h2 {
+            font-size: 20px;
+        }
+
         .ccv-stats {
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 10px;
         }
 
@@ -246,6 +286,12 @@
             font-size: 22px;
         }
 
+        .ccv-stat-icon {
+            width: 35px;
+            height: 35px;
+            font-size: 17px;
+        }
+
         .ccv-panel {
             padding: 15px;
         }
@@ -253,6 +299,12 @@
         .answer-summary {
             grid-template-columns: 1fr;
             gap: 18px;
+        }
+    }
+
+    @media(max-width: 360px) {
+        .ccv-stats {
+            grid-template-columns: 1fr;
         }
     }
 </style>
@@ -271,13 +323,14 @@
 
 <div class="ccv-page">
 
+    {{-- HEADER --}}
     <div class="ccv-heading">
         <div>
             <h2>Dashboard Critical Control Verification</h2>
             <p>Ringkasan hasil verifikasi pengendalian risiko pekerjaan.</p>
         </div>
 
-        <div class="ccv-label">RC1 · MONITORING</div>
+        <div class="ccv-label">RC1 & RC3 · MONITORING</div>
     </div>
 
     {{-- STATISTIK --}}
@@ -305,6 +358,14 @@
                 <div class="ccv-stat-icon orange-bg">⚠</div>
             </div>
             <h3>{{ $totalRC1 }}</h3>
+        </div>
+
+        <div class="ccv-stat">
+            <div class="ccv-stat-top">
+                <small>Laporan Risiko RC3</small>
+                <div class="ccv-stat-icon teal-bg">⚡</div>
+            </div>
+            <h3>{{ $totalRC3 }}</h3>
         </div>
 
         <div class="ccv-stat">
@@ -381,8 +442,14 @@
 
                 <tbody>
                     @forelse($observations as $observation)
+                        @php
+                            $riskCode = strtoupper($observation->risk_code ?? '');
+                        @endphp
+
                         <tr>
-                            <td>{{ $loop->iteration + ($observations->currentPage() - 1) * $observations->perPage() }}</td>
+                            <td>
+                                {{ $loop->iteration + ($observations->currentPage() - 1) * $observations->perPage() }}
+                            </td>
 
                             <td>
                                 <span class="worker-name">
@@ -395,8 +462,9 @@
                             <td>{{ $observation->work_location }}</td>
 
                             <td>
-                                <span class="risk-badge">
-                                    {{ $observation->risk_code }}
+                                <span class="risk-badge
+                                    {{ $riskCode === 'RC1' ? 'risk-rc1' : ($riskCode === 'RC3' ? 'risk-rc3' : 'risk-other') }}">
+                                    {{ $riskCode ?: '-' }}
                                 </span>
                             </td>
 

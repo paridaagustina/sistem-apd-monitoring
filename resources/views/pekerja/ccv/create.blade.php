@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title', 'Formulir CCV')
@@ -709,7 +710,6 @@
                 RC - Risk Containment
             </h5>
 
-            {{-- PENJELASAN RC --}}
             <div class="risk-description">
 
                 <p>
@@ -745,7 +745,7 @@
                         <input type="radio"
                                name="supervisor_present"
                                value="ya"
-                               {{ old('supervisor_present', 'ya') == 'ya' ? 'checked' : '' }}
+                               {{ old('supervisor_present') == 'ya' ? 'checked' : '' }}
                                required>
                         <span>YA</span>
                     </label>
@@ -777,7 +777,7 @@
                         <input type="radio"
                                name="selected_rc"
                                value="RC1"
-                               {{ old('selected_rc', 'RC1') == 'RC1' ? 'checked' : '' }}
+                               {{ old('selected_rc') == 'RC1' ? 'checked' : '' }}
                                required>
 
                         <span>
@@ -990,11 +990,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const rc = selected ? selected.value : '';
 
-        // Tampilkan hanya formulir RC yang dipilih.
+        // Tampilkan formulir sesuai RC yang dipilih.
         sectionRC1.style.display = rc === 'RC1' ? 'block' : 'none';
         sectionRC3.style.display = rc === 'RC3' ? 'block' : 'none';
 
-        // Input pada RC yang tidak dipilih tidak ikut divalidasi/dikirim.
+        // Nonaktifkan input pada RC yang tidak dipilih.
+        // Input yang tidak aktif tidak ikut divalidasi atau dikirim.
         fieldsetRC1.disabled = rc !== 'RC1';
         fieldsetRC3.disabled = rc !== 'RC3';
     }
@@ -1003,7 +1004,8 @@ document.addEventListener('DOMContentLoaded', function () {
         radio.addEventListener('change', updateRiskSection);
     });
 
-    // Tampilkan formulir sesuai pilihan awal atau pilihan sebelumnya.
+    // Saat pertama kali membuka formulir, tidak ada RC terpilih.
+    // Bagian RC1 dan RC3 tetap tersembunyi sampai pengguna memilih RC.
     updateRiskSection();
 
 });

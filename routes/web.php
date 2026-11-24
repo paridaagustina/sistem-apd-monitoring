@@ -118,7 +118,6 @@ Route::middleware(['auth', 'role:admin'])
             [WorkerController::class, 'toggleStatus']
         )->name('workers.toggle-status');
 
-        // HAPUS DATA PEKERJA
         Route::delete('/workers/{worker}', [
             WorkerController::class,
             'destroy',
@@ -155,7 +154,6 @@ Route::middleware(['auth', 'role:admin'])
 
         // ------------------------------------------
         // CCV - DASHBOARD ADMIN
-        // Admin hanya melihat grafik dan laporan
         // ------------------------------------------
 
         Route::get('/ccv', [
@@ -170,7 +168,6 @@ Route::middleware(['auth', 'role:admin'])
 
         // ------------------------------------------
         // PEMERIKSAAN KESEHATAN - DASHBOARD ADMIN
-        // Admin melihat statistik dan hasil pemeriksaan
         // ------------------------------------------
 
         Route::get('/health-check', [
@@ -178,6 +175,13 @@ Route::middleware(['auth', 'role:admin'])
             'index',
         ])->name('health-check.index');
 
+        // Riwayat seluruh pemeriksaan milik satu petugas
+        Route::get('/health-check/petugas/{worker}', [
+            HealthDashboardController::class,
+            'showWorker',
+        ])->name('health-check.worker-history');
+
+        // Detail satu pemeriksaan kesehatan
         Route::get('/health-check/{healthCheck}', [
             HealthDashboardController::class,
             'show',
@@ -252,16 +256,37 @@ Route::middleware(['auth', 'role:pekerja_lapangan'])
         // PEMERIKSAAN KESEHATAN PETUGAS
         // ------------------------------------------
 
+        // Formulir pemeriksaan kesehatan
         Route::get('/health-check', [
             HealthCheckController::class,
             'create',
         ])->name('health-check.create');
 
+        // Simpan hasil pemeriksaan kesehatan
         Route::post('/health-check', [
             HealthCheckController::class,
             'store',
         ])->middleware('throttle:10,1')
           ->name('health-check.store');
+
+        // ------------------------------------------
+        // RIWAYAT PEMERIKSAAN KESEHATAN
+        // ------------------------------------------
+
+        Route::get('/health-check/history', [
+            HealthCheckController::class,
+            'history',
+        ])->name('health-check.history');
+
+        // ------------------------------------------
+        // DETAIL PEMERIKSAAN KESEHATAN
+        // ------------------------------------------
+
+        Route::get('/health-check/{healthCheck}/detail', [
+            HealthCheckController::class,
+            'detail',
+        ])->whereNumber('healthCheck')
+          ->name('health-check.detail');
 
     });
 
